@@ -3,16 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
+import { sampleData } from "@/mock/data"
 
-const BillChart = dynamic(() => import('@/components/BillChart'), { ssr: false })
+const BillChart = dynamic(() => import('@/components/bill-chart'), { ssr: false })
 
-const sampleData = [
-  { provider: 'TeleCo', averageBill: 45 },
-  { provider: 'MobiNet', averageBill: 52 },
-  { provider: 'CellWave', averageBill: 48 },
-  { provider: 'PhonePlus', averageBill: 55 },
-  { provider: 'ConnectAll', averageBill: 50 },
-]
+
 
 export default function HomePage() {
   return (
@@ -26,12 +21,7 @@ export default function HomePage() {
         </p>
         
         <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Sağlayıcıya Göre Ortalama Aylık Faturalar</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-6">
             <BillChart data={sampleData} />
-          </CardContent>
         </Card>
         
         <div className="flex justify-center">
