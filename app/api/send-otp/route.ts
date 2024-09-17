@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase'
 import crypto from 'crypto'
 
 // Function to send SMS using the A2P SMS API
-async function sendSMS(phoneNumber: string, message: string) {
+async function sendSMS(phoneNumber: string, otp: string) {
   console.log('Attempting to send SMS to:', phoneNumber)
   const url = 'https://api.iletimerkezi.com/v1/send-sms/json'
   const key = process.env.SMS_API_KEY
@@ -14,6 +14,8 @@ async function sendSMS(phoneNumber: string, message: string) {
     throw new Error('SMS API credentials are missing')
   }
 
+  const message = `Seffaf Fatura: Doğrulama kodunuz ${otp}. Bu kodu kimseyle paylaşmayın.`
+
   const payload = {
     request: {
       authentication: {
@@ -21,7 +23,7 @@ async function sendSMS(phoneNumber: string, message: string) {
         hash,
       },
       order: {
-        sender: "APITEST",
+        sender: "Seffaf F.", // Replace with your approved sender ID
         message: {
           text: message,
           receipents: {
@@ -85,18 +87,11 @@ export async function POST(request: Request) {
     // Send OTP via SMS
     console.log('Attempting to send OTP via SMS')
     try {
-      await sendSMS(phoneNumber, `Your OTP is: ${otp}`)
+      await sendSMS(phoneNumber, otp)
       console.log('OTP sent successfully via SMS')
       return NextResponse.json({ message: 'OTP sent successfully' })
     } catch (smsError: any) {
       console.error('Failed to send SMS:', smsError)
-      // Check if the error is due to insufficient balance
-      if (smsError.message.includes('Bakiye yetersiz')) {
-        // TODO: Implement a notification system to alert administrators about low balance
-        console.error('SMS account balance is insufficient. Please recharge the account.')
-        // For now, we'll return the OTP in the response (only for development purposes)
-        return NextResponse.json({ message: 'OTP generated but not sent via SMS', otp }, { status: 200 })
-      }
       // For other types of errors, return a generic error message
       return NextResponse.json({ error: 'Failed to send OTP' }, { status: 500 })
     }
