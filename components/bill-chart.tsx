@@ -19,7 +19,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { Button } from "@/components/ui/button"
-import { chartOptions, chartConfig } from '@/mock/data'
 
 interface BillData {
   provider: string;
@@ -30,7 +29,26 @@ interface BillChartProps {
   data: BillData[];
 }
 
+const chartOptions = [
+  { key: 'averageBill', label: 'Ortalama Fatura' },
+  { key: 'internetUsage', label: 'İnternet Kullanımı' },
+  { key: 'callMinutes', label: 'Arama Dakikaları' },
+]
 
+const chartConfig: ChartConfig = {
+  averageBill: {
+    label: "Ortalama Fatura",
+    color: "hsl(var(--chart-1))",
+  },
+  internetUsage: {
+    label: "İnternet Kullanımı",
+    color: "hsl(var(--chart-2))",
+  },
+  callMinutes: {
+    label: "Arama Dakikaları",
+    color: "hsl(var(--chart-3))",
+  },
+}
 
 export default function BillChart({ data }: BillChartProps) {
   const [activeOption, setActiveOption] = useState(chartOptions[0].key)
@@ -92,8 +110,11 @@ export default function BillChart({ data }: BillChartProps) {
         </div>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
+        <div className="flex gap-2 font-medium leading-none">
+          Trend: Yükseliş %5.2 <TrendingUp className="h-4 w-4" />
+        </div>
         <div className="leading-none text-muted-foreground">
-          *Son 6 ayın verilerine göre karşılaştırma
+          Son 6 ayın verilerine göre karşılaştırma
         </div>
       </CardFooter>
     </Card>

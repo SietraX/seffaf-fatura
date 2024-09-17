@@ -4,10 +4,56 @@ import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { sampleData } from "@/mock/data"
+import { useState } from 'react'
+import { Input } from "@/components/ui/input"
 
 const BillChart = dynamic(() => import('@/components/bill-chart'), { ssr: false })
 
+function OTPTest() {
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [otp, setOtp] = useState('')
+  const [message, setMessage] = useState('')
 
+  const sendOTP = async () => {
+    const res = await fetch('/api/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phoneNumber }),
+    })
+    const data = await res.json()
+    setMessage(data.message || data.error)
+  }
+
+  const verifyOTP = async () => {
+    const res = await fetch('/api/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phoneNumber, otp }),
+    })
+    const data = await res.json()
+    setMessage(data.message || data.error)
+  }
+
+  return (
+    <div className="space-y-4">
+      <Input
+        type="tel"
+        value={phoneNumber}
+        onChange={(e) => setPhoneNumber(e.target.value)}
+        placeholder="Phone Number"
+      />
+      <Button onClick={sendOTP}>Send OTP</Button>
+      <Input
+        type="text"
+        value={otp}
+        onChange={(e) => setOtp(e.target.value)}
+        placeholder="Enter OTP"
+      />
+      <Button onClick={verifyOTP}>Verify OTP</Button>
+      {message && <p>{message}</p>}
+    </div>
+  )
+}
 
 export default function HomePage() {
   return (
@@ -44,6 +90,15 @@ export default function HomePage() {
               <li>Mobil hizmet sektöründe fiyat şeffaflığına katkıda bulunun</li>
               <li>Tamamen anonim - kişisel bilgileriniz toplanmaz</li>
             </ul>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Test OTP</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <OTPTest />
           </CardContent>
         </Card>
       </main>
