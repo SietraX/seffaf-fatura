@@ -21,8 +21,25 @@ interface BillFormData {
   contract_start_month: string
 }
 
+interface BillSubmission {
+  id: string;
+  provider_name: string;
+  gigabyte_package: number;
+  voice_call_limit: number;
+  sms_limit: number;
+  bill_price: number;
+  contract_start_month: number;
+  user_id: string;
+  created_at: string;
+}
+
 const providers = ['Turkcell', 'Türk Telekom', 'Vodafone', 'Netgsm']
 const gigabytePackages = [4,5,6,8,10,12,15,16,20,25,30,40,50,60,75,80,100,150]
+
+const monthNameToNumber: { [key: string]: number } = {
+  'Ocak': 1, 'Şubat': 2, 'Mart': 3, 'Nisan': 4, 'Mayıs': 5, 'Haziran': 6,
+  'Temmuz': 7, 'Ağustos': 8, 'Eylül': 9, 'Ekim': 10, 'Kasım': 11, 'Aralık': 12
+};
 
 export function SubmitBillButton() {
   const { isSignedIn, user } = useUser()
@@ -37,10 +54,55 @@ export function SubmitBillButton() {
   })
   const [startMonths, setStartMonths] = useState<string[]>([])
   const { toast } = useToast()
+  const [recentSubmissions, setRecentSubmissions] = useState<BillSubmission[]>([])
 
   useEffect(() => {
     const generatedMonths = generatePastMonths()
     setStartMonths(generatedMonths)
+  }, [])
+
+  useEffect(() => {
+    const supabase = createSupabaseClient()
+  
+    const subscription = supabase
+      .channel('user_bills_changes')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'user_bills' }, (payload) => {
+        console.log('New bill submitted:', payload.new)
+      })
+      .subscribe()
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
+
+  useEffect(() => {
+    const fetchRecentSubmissions = async () => {
+      const supabase = createSupabaseClient()
+      const { data, error } = await supabase
+        .from('user_bills')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(5)
+
+      if (data) {
+        // Ensure the data matches the BillSubmission interface
+        const typedData: BillSubmission[] = data.map(item => ({
+          id: item.id as string,
+          provider_name: item.provider_name as string,
+          gigabyte_package: item.gigabyte_package as number,
+          voice_call_limit: item.voice_call_limit as number,
+          sms_limit: item.sms_limit as number,
+          bill_price: item.bill_price as number,
+          contract_start_month: item.contract_start_month as number,
+          user_id: item.user_id as string,
+          created_at: item.created_at as string
+        }));
+        setRecentSubmissions(typedData);
+      }
+    }
+
+    fetchRecentSubmissions()
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -48,12 +110,39 @@ export function SubmitBillButton() {
     const supabase = createSupabaseClient()
 
     try {
-      const { error } = await supabase.from('user_bills').insert({
+      // Convert the month name to a number
+      const monthParts = formData.contract_start_month.split(' ');
+      const monthName = monthParts[0];
+      const monthNumber = monthNameToNumber[monthName];
+      
+      if (!monthNumber) {
+        throw new Error('Invalid month name');
+      }
+
+      const { data, error } = await supabase.from('user_bills').insert({
         ...formData,
+        contract_start_month: monthNumber, // Send the month number instead of the name
         user_id: user?.id,
-      })
+      }).select()
 
       if (error) throw error
+
+      console.log('Submitted data:', data)
+
+      // Fetch the most recent entry
+      if (user?.id) {
+        const { data: recentEntry, error: fetchError } = await supabase
+          .from('user_bills')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single()
+
+        if (fetchError) throw fetchError
+
+        console.log('Most recent entry:', recentEntry)
+      }
 
       toast({
         title: 'Success',
@@ -94,30 +183,34 @@ export function SubmitBillButton() {
         <form onSubmit={handleSubmit} className="space-y-4 text-foreground">
           <div className="flex items-center space-x-4">
             <Label htmlFor="provider_name" className="w-1/3">Provider</Label>
-            <Select onValueChange={(value) => handleInputChange('provider_name', value)} className="w-2/3">
-              <SelectTrigger id="provider_name" className="bg-background">
-                <SelectValue placeholder="Select provider" />
-              </SelectTrigger>
-              <SelectContent className="bg-background">
-                {providers.map((provider) => (
-                  <SelectItem key={provider} value={provider}>{provider}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="w-2/3">
+              <Select onValueChange={(value) => handleInputChange('provider_name', value)}>
+                <SelectTrigger id="provider_name" className="bg-background">
+                  <SelectValue placeholder="Select provider" />
+                </SelectTrigger>
+                <SelectContent className="bg-background">
+                  {providers.map((provider) => (
+                    <SelectItem key={provider} value={provider}>{provider}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           
           <div className="flex items-center space-x-4">
             <Label htmlFor="gigabyte_package" className="w-1/3">GB Package</Label>
-            <Select onValueChange={(value) => handleInputChange('gigabyte_package', Number(value))} className="w-2/3">
-              <SelectTrigger id="gigabyte_package" className="bg-background">
-                <SelectValue placeholder="Select GB" />
-              </SelectTrigger>
-              <SelectContent className="bg-background">
-                {gigabytePackages.map((gb) => (
-                  <SelectItem key={gb} value={gb.toString()}>{gb} GB</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="w-2/3">
+              <Select onValueChange={(value) => handleInputChange('gigabyte_package', Number(value))}>
+                <SelectTrigger id="gigabyte_package" className="bg-background">
+                  <SelectValue placeholder="Select GB" />
+                </SelectTrigger>
+                <SelectContent className="bg-background">
+                  {gigabytePackages.map((gb) => (
+                    <SelectItem key={gb} value={gb.toString()}>{gb} GB</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           
           <div className="flex items-center space-x-4">
@@ -164,28 +257,30 @@ export function SubmitBillButton() {
           
           <div className="flex items-center space-x-4">
             <Label htmlFor="contract_start_month" className="w-1/3">Contract Start Month</Label>
-            <Popover className="w-2/3">
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start bg-background">
-                  {formData.contract_start_month || "Select month"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[250px] p-2 bg-background">
-                <div className="grid grid-cols-3 gap-2">
-                  {startMonths.map((month) => (
-                    <Button
-                      key={month}
-                      size="sm"
-                      variant={formData.contract_start_month === month ? 'default' : 'outline'}
-                      onClick={() => handleInputChange('contract_start_month', month)}
-                      className="w-full"
-                    >
-                      {month}
-                    </Button>
-                  ))}
-                </div>
-              </PopoverContent>
-            </Popover>
+            <div className="w-2/3">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-start bg-background">
+                    {formData.contract_start_month || "Select month"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[250px] p-2 bg-background">
+                  <div className="grid grid-cols-3 gap-2">
+                    {startMonths.map((month) => (
+                      <Button
+                        key={month}
+                        size="sm"
+                        variant={formData.contract_start_month === month ? 'default' : 'outline'}
+                        onClick={() => handleInputChange('contract_start_month', month)}
+                        className="w-full"
+                      >
+                        {month}
+                      </Button>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
           
           <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">Submit</Button>
