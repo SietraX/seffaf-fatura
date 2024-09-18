@@ -6,6 +6,9 @@ import BillChart from '@/components/bill-chart'
 import { useAuth } from '@clerk/nextjs'
 import { SubmitBillButton } from '@/components/submit-bill-button'
 
+// Remove this import
+// import { Navbar } from '@/components/navbar'
+
 import { XAxis, YAxis } from 'recharts';
 XAxis.defaultProps = { ...XAxis.defaultProps, allowDuplicatedCategory: false };
 YAxis.defaultProps = { ...YAxis.defaultProps, allowDecimals: false };
@@ -66,7 +69,7 @@ export default function HomePage() {
   const processedData = processChartData(data, selectedGB);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-background text-foreground">
       <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">
         Fatura
       </h1>

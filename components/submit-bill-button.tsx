@@ -39,10 +39,8 @@ export function SubmitBillButton() {
   const { toast } = useToast()
 
   useEffect(() => {
-    console.log('SubmitBillButton: Generating past months');
-    const generatedMonths = generatePastMonths();
-    console.log('Generated months:', generatedMonths);
-    setStartMonths(generatedMonths);
+    const generatedMonths = generatePastMonths()
+    setStartMonths(generatedMonths)
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -78,7 +76,7 @@ export function SubmitBillButton() {
 
   if (!isSignedIn) {
     return (
-      <Button onClick={() => window.location.href = '/sign-in'}>
+      <Button onClick={() => window.location.href = '/sign-in'} className="bg-primary text-primary-foreground hover:bg-primary/90">
         Submit Your Bill
       </Button>
     )
@@ -87,47 +85,43 @@ export function SubmitBillButton() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Submit Your Bill</Button>
+        <Button className="bg-primary text-primary-foreground hover:bg-primary/90">Submit Your Bill</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-white">
+      <DialogContent className="sm:max-w-[425px] bg-background">
         <DialogHeader>
           <DialogTitle className="text-foreground">Submit Your Bill</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 text-foreground">
-          <div className="grid grid-cols-3 items-center gap-4">
-            <Label htmlFor="provider_name" className="text-right">Provider</Label>
-            <div className="col-span-2">
-              <Select onValueChange={(value) => handleInputChange('provider_name', value)}>
-                <SelectTrigger id="provider_name" className="w-full">
-                  <SelectValue placeholder="Select provider" />
-                </SelectTrigger>
-                <SelectContent>
-                  {providers.map((provider) => (
-                    <SelectItem key={provider} value={provider}>{provider}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="provider_name" className="w-1/3">Provider</Label>
+            <Select onValueChange={(value) => handleInputChange('provider_name', value)} className="w-2/3">
+              <SelectTrigger id="provider_name" className="bg-background">
+                <SelectValue placeholder="Select provider" />
+              </SelectTrigger>
+              <SelectContent className="bg-background">
+                {providers.map((provider) => (
+                  <SelectItem key={provider} value={provider}>{provider}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
-          <div className="grid grid-cols-3 items-center gap-4">
-            <Label htmlFor="gigabyte_package" className="text-right">GB Package</Label>
-            <div className="col-span-2">
-              <Select onValueChange={(value) => handleInputChange('gigabyte_package', Number(value))}>
-                <SelectTrigger id="gigabyte_package" className="w-full">
-                  <SelectValue placeholder="Select GB" />
-                </SelectTrigger>
-                <SelectContent>
-                  {gigabytePackages.map((gb) => (
-                    <SelectItem key={gb} value={gb.toString()}>{gb} GB</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="gigabyte_package" className="w-1/3">GB Package</Label>
+            <Select onValueChange={(value) => handleInputChange('gigabyte_package', Number(value))} className="w-2/3">
+              <SelectTrigger id="gigabyte_package" className="bg-background">
+                <SelectValue placeholder="Select GB" />
+              </SelectTrigger>
+              <SelectContent className="bg-background">
+                {gigabytePackages.map((gb) => (
+                  <SelectItem key={gb} value={gb.toString()}>{gb} GB</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
-          <div className="grid grid-cols-3 items-center gap-4">
-            <Label htmlFor="voice_call_limit" className="text-right">Voice Call Limit</Label>
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="voice_call_limit" className="w-1/3">Voice Call Limit</Label>
             <Input 
               type="number" 
               id="voice_call_limit" 
@@ -136,12 +130,12 @@ export function SubmitBillButton() {
               min="100"
               max="5000"
               required 
-              className="col-span-2 bg-background"
+              className="bg-background w-2/3"
             />
           </div>
           
-          <div className="grid grid-cols-3 items-center gap-4">
-            <Label htmlFor="sms_limit" className="text-right">SMS Limit</Label>
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="sms_limit" className="w-1/3">SMS Limit</Label>
             <Input 
               type="number" 
               id="sms_limit" 
@@ -150,12 +144,12 @@ export function SubmitBillButton() {
               min="100"
               max="5000"
               required 
-              className="col-span-2 bg-background"
+              className="bg-background w-2/3"
             />
           </div>
           
-          <div className="grid grid-cols-3 items-center gap-4">
-            <Label htmlFor="bill_price" className="text-right">Bill Price</Label>
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="bill_price" className="w-1/3">Bill Price</Label>
             <Input 
               type="number" 
               id="bill_price" 
@@ -164,42 +158,37 @@ export function SubmitBillButton() {
               min="50"
               max="2000"
               required 
-              className="col-span-2 bg-background"
+              className="bg-background w-2/3"
             />
           </div>
           
-          <div className="grid grid-cols-3 items-center gap-4">
-            <Label htmlFor="contract_start_month" className="text-right">Contract Start Month</Label>
-            <Popover>
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="contract_start_month" className="w-1/3">Contract Start Month</Label>
+            <Popover className="w-2/3">
               <PopoverTrigger asChild>
-                <Button variant="outline" className="col-span-2 justify-start w-full">
+                <Button variant="outline" className="w-full justify-start bg-background">
                   {formData.contract_start_month || "Select month"}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-[250px] p-0">
-                <div className="grid grid-cols-3 gap-2 p-2">
-                  {startMonths.map((month) => {
-                    console.log(`Rendering month button: ${month}`);
-                    return (
-                      <Button
-                        key={month}
-                        size="sm"
-                        variant={formData.contract_start_month === month ? 'default' : 'outline'}
-                        onClick={() => {
-                          console.log(`Selected month: ${month}`);
-                          handleInputChange('contract_start_month', month);
-                        }}
-                      >
-                        {month}
-                      </Button>
-                    );
-                  })}
+              <PopoverContent className="w-[250px] p-2 bg-background">
+                <div className="grid grid-cols-3 gap-2">
+                  {startMonths.map((month) => (
+                    <Button
+                      key={month}
+                      size="sm"
+                      variant={formData.contract_start_month === month ? 'default' : 'outline'}
+                      onClick={() => handleInputChange('contract_start_month', month)}
+                      className="w-full"
+                    >
+                      {month}
+                    </Button>
+                  ))}
                 </div>
               </PopoverContent>
             </Popover>
           </div>
           
-          <Button type="submit" className="w-full">Submit</Button>
+          <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">Submit</Button>
         </form>
       </DialogContent>
     </Dialog>
