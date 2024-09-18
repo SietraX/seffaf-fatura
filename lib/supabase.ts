@@ -1,32 +1,21 @@
 import { createClient } from '@supabase/supabase-js'
-import { auth } from '@clerk/nextjs/server'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+let supabaseInstance: ReturnType<typeof createClient> | null = null;
 
-export const createSupabaseClient = async (useAuth = true) => {
-	if (!useAuth) {
-		return createClient(supabaseUrl, supabaseAnonKey);
+export const createSupabaseClient = () => {
+	if (supabaseInstance) return supabaseInstance;
+
+	const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+	const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+	if (!supabaseUrl || !supabaseAnonKey) {
+		throw new Error('Supabase URL or Anonymous Key is missing')
 	}
 
-	try {
-		const { getToken } = auth();
-		const supabaseAccessToken = await getToken({ template: 'supabase' });
+	supabaseInstance = createClient(supabaseUrl, supabaseAnonKey)
+	return supabaseInstance
+}
 
-		if (!supabaseAccessToken) {
-			console.log('No Supabase access token, using anon key');
-			return createClient(supabaseUrl, supabaseAnonKey);
-		}
-
-		return createClient(supabaseUrl, supabaseAnonKey, {
-			global: {
-				headers: {
-					Authorization: `Bearer ${supabaseAccessToken}`,
-				},
-			},
-		});
-	} catch (error) {
-		console.error('Error creating Supabase client:', error);
-		return createClient(supabaseUrl, supabaseAnonKey);
-	}
-};
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+	throw new Error('Supabase environment variables are not set');
+}
