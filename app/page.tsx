@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createSupabaseClient } from '@/lib/supabase'
 import BillChart from '@/components/bill-chart'
 import { useAuth } from '@clerk/nextjs'
+import { SubmitBillButton } from '@/components/submit-bill-button'
 
 import { XAxis, YAxis } from 'recharts';
 XAxis.defaultProps = { ...XAxis.defaultProps, allowDuplicatedCategory: false };
@@ -97,6 +98,9 @@ export default function HomePage() {
             <p>No data available for the selected GB package.</p>
           )}
         </div>
+      </div>
+      <div className="mt-8">
+        <SubmitBillButton />
       </div>
       {!isSignedIn && (
         <p className="mt-4 text-gray-600">
