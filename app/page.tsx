@@ -1,6 +1,11 @@
 import { createSupabaseClient } from '@/lib/supabase'
-import BillChart from '@/components/BillChart'
+import BillChart from '@/components/bill-chart'
 import { auth } from '@clerk/nextjs/server'
+
+interface BillData {
+  provider_name: string;
+  bill_price: number;
+}
 
 export default async function HomePage() {
   try {
@@ -22,7 +27,7 @@ export default async function HomePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
         <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">
-          Anonim Mobil Fatura Takipçisi
+          Fatura
         </h1>
         {data && data.length > 0 ? (
           <BillChart data={processChartData(data)} />
@@ -43,8 +48,8 @@ export default async function HomePage() {
   }
 }
 
-function processChartData(data) {
-  const averageBills = data.reduce((acc, curr) => {
+function processChartData(data: BillData[]) {
+  const averageBills = data.reduce((acc: Record<string, { total: number; count: number }>, curr) => {
     if (!acc[curr.provider_name]) {
       acc[curr.provider_name] = { total: 0, count: 0 };
     }
