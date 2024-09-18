@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useToast } from '@/hooks/use-toast'
 import { createSupabaseClient } from '@/lib/supabase'
+import { generatePastMonths } from '@/lib/utils'
 
 interface BillFormData {
   provider_name: string
@@ -17,7 +18,7 @@ interface BillFormData {
   voice_call_limit: number
   sms_limit: number
   bill_price: number
-  contract_renewal_month: string
+  contract_start_month: string
 }
 
 const providers = ['Turkcell', 'Türk Telekom', 'Vodafone', 'Netgsm']
@@ -32,28 +33,16 @@ export function SubmitBillButton() {
     voice_call_limit: 100,
     sms_limit: 100,
     bill_price: 50,
-    contract_renewal_month: '',
+    contract_start_month: '',
   })
-  const [renewalMonths, setRenewalMonths] = useState<string[]>([])
+  const [startMonths, setStartMonths] = useState<string[]>([])
   const { toast } = useToast()
 
   useEffect(() => {
-    const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
-    const currentDate = new Date()
-    const currentMonth = currentDate.getMonth()
-    const currentYear = currentDate.getFullYear()
-
-    const generateMonths = () => {
-      const result = []
-      for (let i = 0; i < 12; i++) {
-        const monthIndex = (currentMonth - i + 12) % 12
-        const year = currentYear - Math.floor((i - currentMonth) / 12)
-        result.push(`${months[monthIndex]} '${year.toString().slice(-2)}`)
-      }
-      return result.reverse()
-    }
-
-    setRenewalMonths(generateMonths())
+    console.log('SubmitBillButton: Generating past months');
+    const generatedMonths = generatePastMonths();
+    console.log('Generated months:', generatedMonths);
+    setStartMonths(generatedMonths);
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -147,7 +136,7 @@ export function SubmitBillButton() {
               min="100"
               max="5000"
               required 
-              className="col-span-2"
+              className="col-span-2 bg-background"
             />
           </div>
           
@@ -161,7 +150,7 @@ export function SubmitBillButton() {
               min="100"
               max="5000"
               required 
-              className="col-span-2"
+              className="col-span-2 bg-background"
             />
           </div>
           
@@ -175,33 +164,36 @@ export function SubmitBillButton() {
               min="50"
               max="2000"
               required 
-              className="col-span-2"
+              className="col-span-2 bg-background"
             />
           </div>
           
           <div className="grid grid-cols-3 items-center gap-4">
-            <Label htmlFor="contract_renewal_month" className="text-right">Renewal Month</Label>
+            <Label htmlFor="contract_start_month" className="text-right">Contract Start Month</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="col-span-2 justify-start w-full">
-                  {formData.contract_renewal_month || "Select month"}
+                  {formData.contract_start_month || "Select month"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[250px] p-0">
                 <div className="grid grid-cols-3 gap-2 p-2">
-                  {renewalMonths.map((month) => (
-                    <Button
-                      key={month}
-                      size="sm"
-                      variant={formData.contract_renewal_month === month ? 'default' : 'outline'}
-                      onClick={() => {
-                        handleInputChange('contract_renewal_month', month)
-                        // Close the popover after selection
-                      }}
-                    >
-                      {month}
-                    </Button>
-                  ))}
+                  {startMonths.map((month) => {
+                    console.log(`Rendering month button: ${month}`);
+                    return (
+                      <Button
+                        key={month}
+                        size="sm"
+                        variant={formData.contract_start_month === month ? 'default' : 'outline'}
+                        onClick={() => {
+                          console.log(`Selected month: ${month}`);
+                          handleInputChange('contract_start_month', month);
+                        }}
+                      >
+                        {month}
+                      </Button>
+                    );
+                  })}
                 </div>
               </PopoverContent>
             </Popover>
