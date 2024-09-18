@@ -5,6 +5,10 @@ import { createSupabaseClient } from '@/lib/supabase'
 import BillChart from '@/components/bill-chart'
 import { useAuth } from '@clerk/nextjs'
 
+import { XAxis, YAxis } from 'recharts';
+XAxis.defaultProps = { ...XAxis.defaultProps, allowDuplicatedCategory: false };
+YAxis.defaultProps = { ...YAxis.defaultProps, allowDecimals: false };
+
 interface BillData {
   provider_name: string;
   bill_price: number;
@@ -18,10 +22,13 @@ export default function HomePage() {
   const [data, setData] = useState<BillData[]>([]);
   const [selectedGB, setSelectedGB] = useState<number>(10); // Default to 10GB
   const [error, setError] = useState<string | null>(null);
+  const [maxBillPrice, setMaxBillPrice] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
   const { isSignedIn } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const supabase = createSupabaseClient();
         const { data, error } = await supabase
@@ -40,11 +47,17 @@ export default function HomePage() {
         );
 
         setData(validatedData);
+        
+        // Calculate max bill price
+        const max = Math.max(...validatedData.map(item => item.bill_price));
+        setMaxBillPrice(max);
+        
         setError(null);
       } catch (err) {
         console.error('Error fetching data:', err);
         setError('Failed to fetch data. Please try again later.');
         setData([]);
+        setIsLoading(false);
       }
     };
 
@@ -76,10 +89,12 @@ export default function HomePage() {
           </div>
         </div>
         <div className="w-full max-w-3xl">
-          {error ? (
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : error ? (
             <p className="text-red-500">{error}</p>
           ) : processedData.length > 0 ? (
-            <BillChart data={processedData} />
+            <BillChart data={processedData} maxBillPrice={maxBillPrice} />
           ) : (
             <p>No data available for the selected GB package.</p>
           )}

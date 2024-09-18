@@ -1,7 +1,6 @@
 'use client'
 
-import Link from 'next/link'
-import { UserButton, useUser, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { UserButton, useUser, SignInButton } from "@clerk/nextjs";
 
 export default function Navbar() {
   const { isSignedIn, user } = useUser();
@@ -16,7 +15,7 @@ export default function Navbar() {
         {isSignedIn ? (
           <>
             <span>{user?.firstName} {user?.lastName?.slice(0,1)}.</span>
-            <UserButton afterSignOutUrl="/" />
+            <UserButton />
           </>
         ) : (
           <>
@@ -25,7 +24,6 @@ export default function Navbar() {
                 Giriş Yap
               </button>
             </SignInButton>
-            
           </>
         )}
       </div>

@@ -10,6 +10,7 @@ interface ChartData {
 
 interface BillChartProps {
   data: ChartData[];
+  maxBillPrice: number;
 }
 
 const colors = {
@@ -19,7 +20,7 @@ const colors = {
   'Netgsm': '#00c49f'
 };
 
-const BillChart: React.FC<BillChartProps> = ({ data }) => {
+const BillChart: React.FC<BillChartProps> = ({ data, maxBillPrice }) => {
   if (!data || data.length === 0) {
     return <div>No data available for the chart.</div>;
   }
@@ -39,18 +40,22 @@ const BillChart: React.FC<BillChartProps> = ({ data }) => {
         <XAxis dataKey="provider_name" />
         <YAxis 
           label={{ value: 'Average Bill (TL)', angle: -90, position: 'insideLeft' }}
-          domain={[0, 'dataMax']}
+          domain={[0, maxBillPrice]}
+          tickFormatter={(value) => `${value.toFixed(0)} TL`}
         />
         <Tooltip 
           formatter={(value: number) => `${value.toFixed(2)} TL`} 
           labelFormatter={(label) => `Provider: ${label}`}
         />
         <Legend />
-        <Bar dataKey="averageBill" fill="#8884d8">
-          {data.map((entry, index) => (
-            <Bar key={`bar-${index}`} dataKey="averageBill" fill={colors[entry.provider_name as keyof typeof colors]} />
-          ))}
-        </Bar>
+        {data.map((entry) => (
+          <Bar 
+            key={entry.provider_name}
+            dataKey="averageBill"
+            name={entry.provider_name}
+            fill={colors[entry.provider_name as keyof typeof colors]}
+          />
+        ))}
       </BarChart>
     </ResponsiveContainer>
   );
