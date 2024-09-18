@@ -28,7 +28,6 @@ export default function HomePage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
       try {
         const supabase = createSupabaseClient();
         const { data, error } = await supabase
@@ -48,7 +47,6 @@ export default function HomePage() {
 
         setData(validatedData);
         
-        // Calculate max bill price
         const max = Math.max(...validatedData.map(item => item.bill_price));
         setMaxBillPrice(max);
         
@@ -56,7 +54,7 @@ export default function HomePage() {
       } catch (err) {
         console.error('Error fetching data:', err);
         setError('Failed to fetch data. Please try again later.');
-        setData([]);
+      } finally {
         setIsLoading(false);
       }
     };

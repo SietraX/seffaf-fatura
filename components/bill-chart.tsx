@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 
 interface ChartData {
   provider_name: string;
@@ -48,14 +48,15 @@ const BillChart: React.FC<BillChartProps> = ({ data, maxBillPrice }) => {
           labelFormatter={(label) => `Provider: ${label}`}
         />
         <Legend />
-        {data.map((entry) => (
-          <Bar 
-            key={entry.provider_name}
-            dataKey="averageBill"
-            name={entry.provider_name}
-            fill={colors[entry.provider_name as keyof typeof colors]}
-          />
-        ))}
+        <Bar 
+          dataKey="averageBill"
+          fill="#8884d8"
+          name="Average Bill"
+        >
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={colors[entry.provider_name as keyof typeof colors]} />
+          ))}
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   );
