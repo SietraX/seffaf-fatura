@@ -23,14 +23,27 @@ export default function BillChart() {
 
   useEffect(() => {
     async function fetchData() {
-      if (!userId) return
+      console.log('Fetching data, userId:', userId);
+      if (!userId) {
+        console.log('No userId, skipping fetch');
+        return;
+      }
 
-      const response = await fetch('/api/get-bill-data')
-      if (response.ok) {
-        const billData = await response.json()
-        const processedData = processChartData(billData)
-        setData(processedData)
-        setMaxBillPrice(calculateMaxBillPrice(processedData))
+      try {
+        const response = await fetch('/api/get-bill-data')
+        console.log('API response status:', response.status);
+        if (response.ok) {
+          const billData = await response.json()
+          console.log('Received bill data:', billData);
+          const processedData = processChartData(billData)
+          console.log('Processed chart data:', processedData);
+          setData(processedData)
+          setMaxBillPrice(calculateMaxBillPrice(processedData))
+        } else {
+          console.error('Error fetching data:', await response.text());
+        }
+      } catch (error) {
+        console.error('Error in fetchData:', error);
       }
     }
 
@@ -38,6 +51,7 @@ export default function BillChart() {
   }, [userId])
 
   const processChartData = (rawData: any[]): ChartData[] => {
+    console.log('Processing raw data:', rawData);
     const providerTotals: { [key: string]: { sum: number; count: number } } = {}
     
     rawData.forEach(bill => {
@@ -48,17 +62,24 @@ export default function BillChart() {
       providerTotals[bill.provider_name].count++
     })
 
-    return Object.entries(providerTotals).map(([provider, { sum, count }]) => ({
+    const result = Object.entries(providerTotals).map(([provider, { sum, count }]) => ({
       provider_name: provider,
       averageBill: sum / count
     }))
+    console.log('Processed chart data:', result);
+    return result;
   }
 
   const calculateMaxBillPrice = (chartData: ChartData[]): number => {
-    return Math.max(...chartData.map(item => item.averageBill), 100)
+    const max = Math.max(...chartData.map(item => item.averageBill), 100);
+    console.log('Calculated max bill price:', max);
+    return max;
   }
 
+  console.log('Rendering chart with data:', data);
+
   if (!data || data.length === 0) {
+    console.log('No data available for the chart');
     return <div>No data available for the chart.</div>;
   }
 

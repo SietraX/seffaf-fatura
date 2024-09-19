@@ -39,16 +39,55 @@ export async function POST(request: Request) {
 
     billData.contract_start_month = monthNumber
 
-    const { data, error } = await supabase
+    // Check if user_id exists in the table
+    const { data: existingBill, error: fetchError } = await supabase
       .from('user_bills')
-      .insert(billData)
+      .select('created_at, updated_at')
+      .eq('user_id', userId)
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .single()
 
-    if (error) {
-      console.error('Error inserting data:', error)
-      return NextResponse.json({ error: 'Internal Server Error', details: error.message }, { status: 500 })
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      console.error('Error fetching existing bill:', fetchError)
+      return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }
 
-    return NextResponse.json({ message: 'Bill submitted successfully', data })
+    const now = new Date()
+
+    if (existingBill) {
+      const lastUpdateDate = new Date(existingBill.updated_at || existingBill.created_at)
+      const daysSinceLastUpdate = (now.getTime() - lastUpdateDate.getTime()) / (1000 * 3600 * 24)
+
+      if (daysSinceLastUpdate < 30) {
+        return NextResponse.json({ error: 'You can only update your bill once every 30 days' }, { status: 400 })
+      }
+
+      // Update existing bill
+      const { data, error } = await supabase
+        .from('user_bills')
+        .update({ ...billData, updated_at: now.toISOString() })
+        .eq('user_id', userId)
+
+      if (error) {
+        console.error('Error updating data:', error)
+        return NextResponse.json({ error: 'Internal Server Error', details: error.message }, { status: 500 })
+      }
+
+      return NextResponse.json({ message: 'Bill updated successfully', data })
+    } else {
+      // Insert new bill
+      const { data, error } = await supabase
+        .from('user_bills')
+        .insert({ ...billData, created_at: now.toISOString(), updated_at: now.toISOString() })
+
+      if (error) {
+        console.error('Error inserting data:', error)
+        return NextResponse.json({ error: 'Internal Server Error', details: error.message }, { status: 500 })
+      }
+
+      return NextResponse.json({ message: 'Bill submitted successfully', data })
+    }
   } catch (error) {
     console.error('Error processing request:', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })

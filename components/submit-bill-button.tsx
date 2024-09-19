@@ -58,14 +58,15 @@ export function SubmitBillButton() {
         }),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to submit bill')
+        throw new Error(data.error || 'Failed to submit bill')
       }
 
       toast({
         title: 'Success',
-        description: 'Your bill has been submitted successfully.',
+        description: data.message,
       })
       setOpen(false)
     } catch (error) {
