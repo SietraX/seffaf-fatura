@@ -4,18 +4,7 @@ import { SubmitBillButton } from '@/components/submit-bill-button'
 import { CardContainer } from '@/components/card-container'
 import ProviderDistributionChart from '@/components/provider-distribution-chart'
 import { BillDataProvider } from '@/contexts/BillDataContext'
-import { columns } from "@/components/data-table-columns"
-import { DataTable } from "@/components/data-table"
-import { useBillData } from '@/contexts/BillDataContext'
-
-function BillDataTable() {
-  const { billData, isLoading, error } = useBillData()
-
-  if (isLoading) return <div>Loading table data...</div>
-  if (error) return <div>Error loading table data: {error}</div>
-
-  return <DataTable columns={columns} data={billData} />
-}
+import { DataTableContainer } from '@/components/data-table-container'
 
 export default function Home() {
   return (
@@ -31,7 +20,7 @@ export default function Home() {
           </Suspense>
         </div>
         <Suspense fallback={<div>Loading bill data table...</div>}>
-          <BillDataTable />
+          <DataTableContainer />
         </Suspense>
       </BillDataProvider>
       <SubmitBillButton />

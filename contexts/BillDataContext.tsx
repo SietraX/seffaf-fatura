@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-interface BillData {
+export interface BillData {  // Add 'export' here
   provider_name: string;
   bill_price: number;
   gigabyte_package: number;
