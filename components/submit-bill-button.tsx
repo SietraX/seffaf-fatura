@@ -21,22 +21,22 @@ export function SubmitBillButton() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {isSubmissionAllowed ? (
-          <Button>Submit Your Bill</Button>
-        ) : (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" disabled>Submit Your Bill</Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>You can submit your next bill on {nextSubmissionDate?.toLocaleDateString()}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </DialogTrigger>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DialogTrigger asChild>
+              <Button variant={isSubmissionAllowed ? "default" : "outline"} disabled={!isSubmissionAllowed}>
+                Submit Your Bill
+              </Button>
+            </DialogTrigger>
+          </TooltipTrigger>
+          {!isSubmissionAllowed && (
+            <TooltipContent>
+              <p>You can submit your next bill on {nextSubmissionDate?.toLocaleDateString()}</p>
+            </TooltipContent>
+          )}
+        </Tooltip>
+      </TooltipProvider>
       <DialogContent className="sm:max-w-[425px] bg-white">
         <DialogHeader>
           <DialogTitle className="text-foreground">Submit Your Bill</DialogTitle>
