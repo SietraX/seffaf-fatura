@@ -1,13 +1,25 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
+import { BillFormData } from '@/types/bill'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const recaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY!
 
 const monthNameToNumber: { [key: string]: number } = {
   'Ocak': 1, 'Şubat': 2, 'Mart': 3, 'Nisan': 4, 'Mayıs': 5, 'Haziran': 6,
   'Temmuz': 7, 'Ağustos': 8, 'Eylül': 9, 'Ekim': 10, 'Kasım': 11, 'Aralık': 12
+};
+
+async function verifyRecaptcha(token: string) {
+  const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `secret=${recaptchaSecretKey}&response=${token}`,
+  })
+  const data = await response.json()
+  return data.success
 }
 
 export async function POST(request: Request) {
@@ -26,7 +38,15 @@ export async function POST(request: Request) {
 
   try {
     const billData = await request.json()
-    billData.user_id = userId
+    const { recaptchaToken, ...billDetails } = billData
+
+    // Verify reCAPTCHA
+    const isRecaptchaValid = await verifyRecaptcha(recaptchaToken)
+    if (!isRecaptchaValid) {
+      return NextResponse.json({ error: 'Invalid reCAPTCHA' }, { status: 400 })
+    }
+
+    billDetails.user_id = userId
 
     // Convert month name to number
     const monthParts = billData.contract_start_month.split(' ')
@@ -34,10 +54,10 @@ export async function POST(request: Request) {
     const monthNumber = monthNameToNumber[monthName]
 
     if (!monthNumber) {
-      return NextResponse.json({ error: 'Invalid month name' }, { status: 400 })
+      return NextResponse.json({ error: 'Geçersiz ay adı' }, { status: 400 })
     }
 
-    billData.contract_start_month = monthNumber
+    billDetails.contract_start_month = monthNumber
 
     // Check if user_id exists in the table
     const { data: existingBill, error: fetchError } = await supabase
@@ -66,7 +86,7 @@ export async function POST(request: Request) {
       // Update existing bill
       const { data, error } = await supabase
         .from('user_bills')
-        .update({ ...billData, updated_at: now.toISOString() })
+        .update({ ...billDetails, updated_at: now.toISOString() })
         .eq('user_id', userId)
 
       if (error) {
@@ -79,7 +99,7 @@ export async function POST(request: Request) {
       // Insert new bill
       const { data, error } = await supabase
         .from('user_bills')
-        .insert({ ...billData, created_at: now.toISOString(), updated_at: now.toISOString() })
+        .insert({ ...billDetails, created_at: now.toISOString(), updated_at: now.toISOString() })
 
       if (error) {
         console.error('Error inserting data:', error)

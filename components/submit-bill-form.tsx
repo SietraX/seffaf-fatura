@@ -8,22 +8,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { generatePastMonths } from '@/lib/utils'
 import { useSubmitBill } from '@/hooks/useSubmitBill'
+import { ReCaptcha } from '@/components/recaptcha'
+import { BillFormData } from '@/types/bill'
+import { useToast } from '@/hooks/use-toast'
 
-interface BillFormData {
-  provider_name: string
-  gigabyte_package: number
-  voice_call_limit: number
-  sms_limit: number
-  bill_price: number
-  contract_start_month: string
-}
+const providers = ['Turkcell', 'Türk Telekom', 'Vodafone', 'Netgsm']
+const gigabytePackages = [4,5,6,8,10,12,15,16,20,25,30,40,50,60,75,80,100,150]
 
 interface SubmitBillFormProps {
   onSubmissionComplete: () => void
 }
-
-const providers = ['Turkcell', 'Türk Telekom', 'Vodafone', 'Netgsm']
-const gigabytePackages = [4,5,6,8,10,12,15,16,20,25,30,40,50,60,75,80,100,150]
 
 export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
   const [formData, setFormData] = useState<BillFormData>({
@@ -36,17 +30,37 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
   })
   const [startMonths] = useState<string[]>(generatePastMonths(12))
   const { isSubmissionAllowed, submitBill } = useSubmitBill()
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
+  const { toast } = useToast()  // Add this line to use the toast hook
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const success = await submitBill(formData)
+    if (!recaptchaToken) {
+      toast({
+        title: 'Hata',
+        description: 'Lütfen reCAPTCHA doğrulamasını tamamlayın.',
+        variant: 'destructive',
+      })
+      return
+    }
+    const success = await submitBill({ ...formData, recaptchaToken })
     if (success) {
       onSubmissionComplete()
+    } else {
+      toast({
+        title: 'Hata',
+        description: 'Fatura gönderimi sırasında bir hata oluştu. Lütfen tekrar deneyin.',
+        variant: 'destructive',
+      })
     }
   }
 
   const handleInputChange = (name: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleRecaptchaVerify = (token: string | null) => {
+    setRecaptchaToken(token)
   }
 
   return (
@@ -153,7 +167,11 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
         </div>
       </div>
 
-      <Button type="submit" className="w-full" disabled={!isSubmissionAllowed}>Submit</Button>
+      <div className="flex justify-center">
+        <ReCaptcha onVerify={handleRecaptchaVerify} />
+      </div>
+
+      <Button type="submit" className="w-full" disabled={!isSubmissionAllowed || !recaptchaToken}>Submit</Button>
     </form>
   )
 }

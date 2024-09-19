@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { useToast } from '@/hooks/use-toast'
+import { BillFormData } from '@/types/bill'
+
+interface SubmitBillData extends BillFormData {
+  recaptchaToken: string
+}
 
 export function useSubmitBill() {
   const { isSignedIn, user } = useUser()
@@ -40,8 +45,8 @@ export function useSubmitBill() {
     }
   }
 
-  const submitBill = async (formData: any) => {
-    if (!isSubmissionAllowed) return;
+  const submitBill = async (formData: SubmitBillData) => {
+    if (!isSubmissionAllowed || !formData.recaptchaToken) return false;
 
     try {
       const response = await fetch('/api/submit-bill', {
