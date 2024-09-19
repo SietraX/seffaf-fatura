@@ -44,10 +44,97 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 20,
+        pageSize: 10,
       },
     },
   })
+
+  const totalPages = table.getPageCount()
+  const currentPage = table.getState().pagination.pageIndex + 1
+
+  const renderPaginationItems = () => {
+    const items = []
+    const showEllipsisStart = currentPage > 3
+    const showEllipsisEnd = currentPage < totalPages - 2
+
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink 
+              onClick={() => table.setPageIndex(i - 1)}
+              isActive={currentPage === i}
+              className="cursor-pointer hover:bg-muted"
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        )
+      }
+    } else {
+      // Always show first page
+      items.push(
+        <PaginationItem key={1}>
+          <PaginationLink 
+            onClick={() => table.setPageIndex(0)}
+            isActive={currentPage === 1}
+            className="cursor-pointer hover:bg-muted"
+          >
+            1
+          </PaginationLink>
+        </PaginationItem>
+      )
+
+      if (showEllipsisStart) {
+        items.push(
+          <PaginationItem key="ellipsis-start">
+            <PaginationEllipsis />
+          </PaginationItem>
+        )
+      }
+
+      // Show current page and surrounding pages
+      const start = Math.max(currentPage - 1, 2)
+      const end = Math.min(currentPage + 1, totalPages - 1)
+
+      for (let i = start; i <= end; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink 
+              onClick={() => table.setPageIndex(i - 1)}
+              isActive={currentPage === i}
+              className="cursor-pointer hover:bg-muted"
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        )
+      }
+
+      if (showEllipsisEnd) {
+        items.push(
+          <PaginationItem key="ellipsis-end">
+            <PaginationEllipsis />
+          </PaginationItem>
+        )
+      }
+
+      // Always show last page
+      items.push(
+        <PaginationItem key={totalPages}>
+          <PaginationLink 
+            onClick={() => table.setPageIndex(totalPages - 1)}
+            isActive={currentPage === totalPages}
+            className="cursor-pointer hover:bg-muted"
+          >
+            {totalPages}
+          </PaginationLink>
+        </PaginationItem>
+      )
+    }
+
+    return items
+  }
 
   return (
     <div>
@@ -99,28 +186,17 @@ export function DataTable<TData, TValue>({
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              {table.getCanPreviousPage() ? (
-                <PaginationPrevious onClick={() => table.previousPage()} />
-              ) : (
-                <PaginationPrevious className="pointer-events-none opacity-50" />
-              )}
+              <PaginationPrevious 
+                onClick={() => table.previousPage()} 
+                className={`cursor-pointer hover:bg-muted ${!table.getCanPreviousPage() ? 'pointer-events-none opacity-50' : ''}`}
+              />
             </PaginationItem>
-            {Array.from({length: table.getPageCount()}, (_, i) => i + 1).map((page) => (
-              <PaginationItem key={page}>
-                <PaginationLink 
-                  onClick={() => table.setPageIndex(page - 1)}
-                  isActive={table.getState().pagination.pageIndex === page - 1}
-                >
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
+            {renderPaginationItems()}
             <PaginationItem>
-              {table.getCanNextPage() ? (
-                <PaginationNext onClick={() => table.nextPage()} />
-              ) : (
-                <PaginationNext className="pointer-events-none opacity-50" />
-              )}
+              <PaginationNext 
+                onClick={() => table.nextPage()} 
+                className={`cursor-pointer hover:bg-muted ${!table.getCanNextPage() ? 'pointer-events-none opacity-50' : ''}`}
+              />
             </PaginationItem>
           </PaginationContent>
         </Pagination>
