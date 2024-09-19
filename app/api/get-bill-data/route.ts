@@ -14,7 +14,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from('user_bills')
-    .select('provider_name, bill_price, gigabyte_package')
+    .select('provider_name, gigabyte_package, voice_call_limit, sms_limit, bill_price, contract_start_month, updated_at')
 
   if (error) {
     console.error('Error fetching data:', error)
