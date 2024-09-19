@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { useBillData } from '@/contexts/BillDataContext';
 
 interface BillData {
   provider_name: string;
@@ -25,42 +26,13 @@ const gbPackages = [10, 15, 20, 25, 30, 40, 50];
 const providers = ['Turkcell', 'Vodafone', 'Türk Telekom', 'Netgsm'];
 
 export default function BillChart() {
-  const [rawData, setRawData] = useState<BillData[]>([]);
-  const [data, setData] = useState<ChartData[]>([]);
+  const { billData, isLoading, error } = useBillData();
   const [selectedGB, setSelectedGB] = useState<number>(10);
-  const [maxBillPrice, setMaxBillPrice] = useState(100);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch('/api/get-bill-data');
-        if (response.ok) {
-          const billData: BillData[] = await response.json();
-          setRawData(billData);
-          processChartData(billData, selectedGB);
-        } else {
-          console.error('Error fetching data:', await response.text());
-          setError('Failed to fetch data. Please try again later.');
-        }
-      } catch (error) {
-        console.error('Error in fetchData:', error);
-        setError('An error occurred while fetching data.');
-      } finally {
-        setIsLoading(false);
-      }
-    }
+  const processedData = useMemo(() => {
+    if (!billData.length) return [];
 
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    processChartData(rawData, selectedGB);
-  }, [selectedGB, rawData]);
-
-  const processChartData = (rawData: BillData[], selectedGB: number) => {
-    const filteredData = rawData.filter(item => item.gigabyte_package === selectedGB);
+    const filteredData = billData.filter(item => item.gigabyte_package === selectedGB);
     
     const providerTotals: Record<string, { billSum: number; count: number }> = {};
     
@@ -72,19 +44,15 @@ export default function BillChart() {
       providerTotals[bill.provider_name].count++;
     });
 
-    const result = providers.map(provider => ({
+    return providers.map(provider => ({
       provider_name: provider,
       averageBill: providerTotals[provider] ? providerTotals[provider].billSum / providerTotals[provider].count : 0,
     }));
+  }, [billData, selectedGB]);
 
-    setData(result);
-    setMaxBillPrice(calculateMax(result, 'averageBill'));
-  };
-
-  const calculateMax = (chartData: ChartData[], key: keyof ChartData): number => {
-    const max = Math.max(...chartData.map(item => Number(item[key])), 100);
-    return max;
-  };
+  const maxBillPrice = useMemo(() => {
+    return Math.max(...processedData.map(item => item.averageBill), 100);
+  }, [processedData]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -94,7 +62,7 @@ export default function BillChart() {
     return <div className="text-red-500">{error}</div>;
   }
 
-  if (!data || data.length === 0) {
+  if (!processedData || processedData.length === 0) {
     return <div>No data available for the chart.</div>;
   }
 
@@ -121,7 +89,7 @@ export default function BillChart() {
         <div className="w-full max-w-3xl">
           <ResponsiveContainer width="100%" height={400}>
             <BarChart
-              data={data}
+              data={processedData}
               margin={{
                 top: 20,
                 right: 30,
@@ -142,7 +110,7 @@ export default function BillChart() {
               />
               <Legend />
               <Bar dataKey="averageBill" fill="#8884d8" name="Average Bill">
-                {data.map((entry, index) => (
+                {processedData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={colors[entry.provider_name as keyof typeof colors]} />
                 ))}
               </Bar>

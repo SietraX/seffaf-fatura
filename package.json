@@ -20,6 +20,7 @@
     "@radix-ui/react-toast": "^1.2.1",
     "@radix-ui/react-tooltip": "^1.1.2",
     "@supabase/supabase-js": "^2.45.4",
+    "@tanstack/react-table": "^8.20.5",
     "@types/react-google-recaptcha": "^2.1.9",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
