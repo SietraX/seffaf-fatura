@@ -1,65 +1,46 @@
-'use client'
+'use client' // Add this line to make it a Client Component
 
-import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { useState, useEffect } from 'react'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { useAuth } from '@clerk/nextjs'
 
-interface ChartData {
+interface BillData {
   provider_name: string;
-  averageBill: number;
+  bill_price: number;
+  gigabyte_package: number;
 }
 
-interface BillChartProps {
-  data: ChartData[];
-  maxBillPrice: number;
-}
+export default function BillChart() {
+  const { userId } = useAuth()
+  const [data, setData] = useState<BillData[]>([])
 
-const colors = {
-  'Turkcell': '#ffc658',
-  'Vodafone': '#ff8042',
-  'Türk Telekom': '#0088fe',
-  'Netgsm': '#00c49f'
-};
+  useEffect(() => {
+    async function fetchData() {
+      if (!userId) return
 
-const BillChart: React.FC<BillChartProps> = ({ data, maxBillPrice }) => {
-  if (!data || data.length === 0) {
-    return <div>No data available for the chart.</div>;
-  }
+      const response = await fetch('/api/get-bill-data')
+      if (response.ok) {
+        const billData = await response.json()
+        setData(billData)
+      }
+    }
+
+    fetchData()
+  }, [userId])
+
+  const maxBillPrice = data.length > 0 ? Math.max(...data.map(bill => bill.bill_price)) : 100
 
   return (
     <ResponsiveContainer width="100%" height={400}>
-      <BarChart
-        data={data}
-        margin={{
-          top: 20,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
+      <BarChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="provider_name" />
-        <YAxis 
-          label={{ value: 'Average Bill (TL)', angle: -90, position: 'insideLeft' }}
-          domain={[0, maxBillPrice]}
-          tickFormatter={(value) => `${value.toFixed(0)} TL`}
-        />
-        <Tooltip 
-          formatter={(value: number) => `${value.toFixed(2)} TL`} 
-          labelFormatter={(label) => `Provider: ${label}`}
-        />
+        <YAxis domain={[0, maxBillPrice]} />
+        <Tooltip />
         <Legend />
-        <Bar 
-          dataKey="averageBill"
-          fill="#8884d8"
-          name="Average Bill"
-        >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={colors[entry.provider_name as keyof typeof colors]} />
-          ))}
-        </Bar>
+        <Bar dataKey="bill_price" fill="#8884d8" />
+        <Bar dataKey="gigabyte_package" fill="#82ca9d" />
       </BarChart>
     </ResponsiveContainer>
-  );
-};
-
-export default BillChart;
+  )
+}
