@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { BillData } from "@/contexts/BillDataContext"
+import { getTimeAgo } from "@/utils/timeAgo"
 
 export const columns: ColumnDef<BillData>[] = [
   {
@@ -45,8 +46,8 @@ export const columns: ColumnDef<BillData>[] = [
     accessorKey: "updated_at",
     header: "Last Updated",
     cell: ({ row }) => {
-      const date = new Date(row.getValue("updated_at") as string)
-      return date.toLocaleDateString()
+      const date = row.getValue("updated_at") as string
+      return getTimeAgo(date)
     },
   },
 ]
