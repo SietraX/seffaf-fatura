@@ -1,11 +1,10 @@
 'use client'
 
 import React, { useMemo } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { useBillData } from '@/contexts/BillDataContext';
 
 const COLORS = ['#00C49F', '#FFBB28', '#0088FE', '#FF8042'];
-// const COLORS = ['#00C49F', '#FFBB28', '#0088FE', '#FF8042'];
 
 export default function ProviderDistributionChart() {
   const { billData, isLoading, error } = useBillData();
@@ -36,11 +35,23 @@ export default function ProviderDistributionChart() {
     return <div>No provider distribution data available.</div>;
   }
 
-  const total = processedData.reduce((sum, item) => sum + item.value, 0);  // Change this line
+  const total = processedData.reduce((sum, item) => sum + item.value, 0);
+
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }: any) => {
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+        {`${name} ${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
 
   return (
-    <div className="w-full h-[400px]">
-      <h2 className="text-2xl font-bold mb-4 text-center">Provider Distribution</h2>
+    <div className="w-full h-[200px]">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -50,15 +61,14 @@ export default function ProviderDistributionChart() {
             labelLine={false}
             outerRadius={80}
             fill="#8884d8"
-            dataKey="value"  // Change this line
-            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+            dataKey="value"
+            label={renderCustomizedLabel}
           >
             {processedData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           <Tooltip formatter={(value, name) => [`${value} (${((value as number / total) * 100).toFixed(2)}%)`, name]} />
-          <Legend />
         </PieChart>
       </ResponsiveContainer>
     </div>

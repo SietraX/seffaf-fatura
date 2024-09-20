@@ -11,14 +11,9 @@ export default function Home() {
     <main className="container mx-auto px-4 py-8">
       <BillDataProvider>
         <CardContainer />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          <Suspense fallback={<div>Loading bill chart...</div>}>
-            <BillChart />
-          </Suspense>
-          <Suspense fallback={<div>Loading provider distribution...</div>}>
-            <ProviderDistributionChart />
-          </Suspense>
-        </div>
+        <Suspense fallback={<div>Loading bill chart...</div>}>
+          <BillChart />
+        </Suspense>
         <Suspense fallback={<div>Loading bill data table...</div>}>
           <DataTableContainer />
         </Suspense>
