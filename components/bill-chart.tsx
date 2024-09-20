@@ -44,15 +44,22 @@ export default function BillChart() {
       providerTotals[bill.provider_name].count++;
     });
 
-    return providers.map(provider => ({
+    const result = Object.entries(providerTotals).map(([provider, data]) => ({
       provider_name: provider,
-      averageBill: providerTotals[provider] ? providerTotals[provider].billSum / providerTotals[provider].count : 0,
+      averageBill: data.count > 0 ? data.billSum / data.count : 0,
     }));
+
+    return result;
   }, [billData, selectedGB]);
 
   const maxBillPrice = useMemo(() => {
     return Math.max(...processedData.map(item => item.averageBill), 100);
   }, [processedData]);
+
+  const gbOptions = useMemo(() => {
+    const options = Array.from(new Set(billData.map(bill => bill.gigabyte_package))).sort((a, b) => a - b);
+    return options;
+  }, [billData]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -60,10 +67,6 @@ export default function BillChart() {
 
   if (error) {
     return <div className="text-red-500">{error}</div>;
-  }
-
-  if (!processedData || processedData.length === 0) {
-    return <div>No data available for the chart.</div>;
   }
 
   return (

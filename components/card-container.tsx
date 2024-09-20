@@ -5,11 +5,24 @@ import { CustomCard } from '@/components/ui/custom-card'
 import { useBillData } from '@/contexts/BillDataContext'
 import ProviderDistributionChart from '@/components/provider-distribution-chart'
 
+interface MostSelectedGB {
+  gbSize: number;
+  count: number;
+}
+
 export function CardContainer() {
   const { billData, isLoading, error } = useBillData()
 
+
   const stats = useMemo(() => {
-    if (!billData.length) return { total: 0, last30Days: 0, last24Hours: 0, prev30Days: 0, prevDay: 0 }
+    if (!billData.length) return { 
+      total: 0, 
+      last30Days: 0, 
+      last24Hours: 0, 
+      prev30Days: 0, 
+      prevDay: 0, 
+      mostSelectedGB: { gbSize: 0, count: 0 } as MostSelectedGB
+    }
 
     const now = new Date()
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
@@ -17,15 +30,33 @@ export function CardContainer() {
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000)
     const twoDaysAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000)
 
-    return billData.reduce((acc, bill) => {
+    const gbPackages: Record<number, number> = {}
+
+    const result = billData.reduce((acc, bill) => {
       const billDate = new Date(bill.updated_at)
       acc.total++
       if (billDate >= thirtyDaysAgo) acc.last30Days++
       if (billDate >= sixtyDaysAgo && billDate < thirtyDaysAgo) acc.prev30Days++
       if (billDate >= oneDayAgo) acc.last24Hours++
       if (billDate >= twoDaysAgo && billDate < oneDayAgo) acc.prevDay++
+
+      // Count GB packages
+      if (bill.gigabyte_package) {
+        gbPackages[bill.gigabyte_package] = (gbPackages[bill.gigabyte_package] || 0) + 1
+      }
+
       return acc
     }, { total: 0, last30Days: 0, last24Hours: 0, prev30Days: 0, prevDay: 0 })
+
+    // Find the most selected GB package
+    const mostSelectedGB = Object.entries(gbPackages).reduce<MostSelectedGB>(
+      (max, [gbSize, count]) => {
+        return count > max.count ? { gbSize: Number(gbSize), count } : max
+      },
+      { gbSize: 0, count: 0 }
+    )
+
+    return { ...result, mostSelectedGB }
   }, [billData])
 
   if (isLoading) return <div>Loading...</div>
@@ -64,8 +95,17 @@ export function CardContainer() {
         }
       />
       <CustomCard
-        title="Provider Distribution"
-        content={<ProviderDistributionChart />}
+        title="Most Selected GB Package"
+        content={
+          <div className="text-4xl font-bold">
+            {stats.mostSelectedGB.gbSize || 'N/A'} GB
+          </div>
+        }
+        footer={
+          <div className="text-sm text-muted-foreground">
+            Selected {stats.mostSelectedGB.count} times
+          </div>
+        }
       />
     </div>
   )
