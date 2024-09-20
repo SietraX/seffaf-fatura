@@ -48,20 +48,34 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
+const timeRanges = [
+  { label: "Last 3 months", value: "3m" },
+  { label: "Last 6 months", value: "6m" },
+  { label: "Last 1 year", value: "1y" },
+  { label: "All time", value: "all" },
+]
+
 export function PriceActionChart() {
   const { billData } = useBillData()
   const [selectedGB, setSelectedGB] = React.useState("")
+  const [timeRange, setTimeRange] = React.useState("all")
 
   const gbOptions = Array.from(new Set(billData.map(bill => bill.gigabyte_package.toString())))
 
   const chartData = React.useMemo(() => {
     if (!selectedGB || billData.length === 0) return []
 
-    const startDate = new Date(billData[0].contract_start_date)
+    const now = new Date()
+    let startDate = new Date(Math.min(...billData.map(bill => new Date(bill.contract_start_date).getTime())))
+    
+    if (timeRange !== "all") {
+      const months = parseInt(timeRange)
+      startDate = new Date(now.getFullYear(), now.getMonth() - months, 1)
+    }
+
     const monthsData = []
 
-    for (let i = 0; i < 24; i++) {
-      const currentDate = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1)
+    for (let currentDate = new Date(startDate); currentDate <= now; currentDate.setMonth(currentDate.getMonth() + 1)) {
       const monthData: {
         date: string;
         Turkcell: number;
@@ -78,7 +92,7 @@ export function PriceActionChart() {
       }
 
       billData.forEach(bill => {
-        if (bill.gigabyte_package.toString() === selectedGB) {
+        if (bill.gigabyte_package.toString() === selectedGB && new Date(bill.contract_start_date) <= currentDate) {
           monthData[bill.provider_name] = bill.bill_price
         }
       })
@@ -87,7 +101,7 @@ export function PriceActionChart() {
     }
 
     return monthsData
-  }, [billData, selectedGB])
+  }, [billData, selectedGB, timeRange])
 
   return (
     <Card>
@@ -109,6 +123,21 @@ export function PriceActionChart() {
             {gbOptions.map(gb => (
               <SelectItem key={gb} value={gb} className="rounded-lg">
                 {gb} GB
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={timeRange} onValueChange={setTimeRange}>
+          <SelectTrigger
+            className="w-[160px] rounded-lg sm:ml-auto"
+            aria-label="Select time range"
+          >
+            <SelectValue placeholder="Select time range" />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl">
+            {timeRanges.map(range => (
+              <SelectItem key={range.value} value={range.value} className="rounded-lg">
+                {range.label}
               </SelectItem>
             ))}
           </SelectContent>
