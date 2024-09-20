@@ -5,6 +5,7 @@ import { CardContainer } from '@/components/card-container'
 import ProviderDistributionChart from '@/components/provider-distribution-chart'
 import { BillDataProvider } from '@/contexts/BillDataContext'
 import { DataTableContainer } from '@/components/data-table-container'
+import { PriceActionChart } from '@/components/price-action-chart'
 
 export default function Home() {
   return (
@@ -16,6 +17,9 @@ export default function Home() {
         </Suspense>
         <Suspense fallback={<div>Loading bill data table...</div>}>
           <DataTableContainer />
+        </Suspense>
+        <Suspense fallback={<div>Loading price action chart...</div>}>
+          <PriceActionChart />
         </Suspense>
       </BillDataProvider>
       <SubmitBillButton />
