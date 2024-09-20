@@ -16,9 +16,11 @@ export default function Home() {
         <Suspense fallback={<div>Loading bill chart...</div>}>
           <BillChart />
         </Suspense>
-        <Suspense fallback={<div>Loading provider distribution chart...</div>}>
-          <ProviderDistributionChart />
-          <GigabytePackageDistributionChart />
+        <Suspense fallback={<div>Loading distribution charts...</div>}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ProviderDistributionChart />
+            <GigabytePackageDistributionChart />
+          </div>
         </Suspense>
         <Suspense fallback={<div>Loading bill data table...</div>}>
           <DataTableContainer />
