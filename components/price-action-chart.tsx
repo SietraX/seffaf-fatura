@@ -55,9 +55,9 @@ export function PriceActionChart() {
   const gbOptions = Array.from(new Set(billData.map(bill => bill.gigabyte_package.toString())))
 
   const chartData = React.useMemo(() => {
-    if (!selectedGB) return []
+    if (!selectedGB || billData.length === 0) return []
 
-    const startDate = new Date(billData[0].contract_start_month)
+    const startDate = new Date(billData[0].contract_start_date)
     const monthsData = []
 
     for (let i = 0; i < 24; i++) {

@@ -9,6 +9,7 @@ export interface BillData {
   sms_limit: number;
   bill_price: number;
   contract_start_month: number;
+  contract_start_date: string; // Add this line
   updated_at: string;
 }
 
