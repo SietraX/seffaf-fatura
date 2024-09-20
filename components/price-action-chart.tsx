@@ -1,107 +1,76 @@
 "use client"
 
-import * as React from "react"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
-import { useBillData } from "@/contexts/BillDataContext"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import React, { useState, useMemo, useEffect } from 'react'
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useBillData } from '@/contexts/BillDataContext'
 
-const chartConfig = {
+const chartConfig: ChartConfig = {
   price: {
     label: "Price",
-  },
-  Turkcell: {
-    label: "Turkcell",
     color: "hsl(var(--chart-1))",
-  },
-  Vodafone: {
-    label: "Vodafone",
-    color: "hsl(var(--chart-2))",
-  },
-  "Türk Telekom": {
-    label: "Türk Telekom",
-    color: "hsl(var(--chart-3))",
-  },
-  Netgsm: {
-    label: "Netgsm",
-    color: "hsl(var(--chart-4))",
   },
 } satisfies ChartConfig
 
-const timeRanges = [
-  { label: "Last 3 months", value: "3m" },
-  { label: "Last 6 months", value: "6m" },
-  { label: "Last 1 year", value: "1y" },
-  { label: "All time", value: "all" },
-]
-
 export function PriceActionChart() {
-  const { billData } = useBillData()
-  const [selectedGB, setSelectedGB] = React.useState("")
-  const [timeRange, setTimeRange] = React.useState("all")
+  const { billData, isLoading, error } = useBillData()
+  const [selectedGB, setSelectedGB] = useState<string>('')
+  const [timeRange, setTimeRange] = useState('all')
 
-  const gbOptions = Array.from(new Set(billData.map(bill => bill.gigabyte_package.toString())))
+  const gbOptions = useMemo(() => {
+    const uniqueGBs = Array.from(new Set(billData.map(bill => bill.gigabyte_package))).sort((a, b) => a - b)
+    return uniqueGBs.map(gb => gb.toString())
+  }, [billData])
 
-  const chartData = React.useMemo(() => {
-    if (!selectedGB || billData.length === 0) return []
+  const mostSelectedGB = useMemo(() => {
+    const gbCounts = billData.reduce((acc, bill) => {
+      acc[bill.gigabyte_package] = (acc[bill.gigabyte_package] || 0) + 1
+      return acc
+    }, {} as Record<number, number>)
+    
+    const entries = Object.entries(gbCounts)
+    if (entries.length === 0) return null
+
+    return entries.reduce((a, b) => 
+      gbCounts[Number(a[0])] > gbCounts[Number(b[0])] ? a : b
+    )[0]
+  }, [billData])
+
+  useEffect(() => {
+    if (mostSelectedGB && !selectedGB) {
+      setSelectedGB(mostSelectedGB)
+    }
+  }, [mostSelectedGB, selectedGB])
+
+  const timeRanges = [
+    { value: '7', label: 'Last 7 days' },
+    { value: '30', label: 'Last 30 days' },
+    { value: '90', label: 'Last 90 days' },
+    { value: 'all', label: 'All time' },
+  ]
+
+  const filteredData = useMemo(() => {
+    if (!selectedGB) return []
 
     const now = new Date()
-    let startDate = new Date(Math.min(...billData.map(bill => new Date(bill.contract_start_date).getTime())))
-    
-    if (timeRange !== "all") {
-      const months = parseInt(timeRange)
-      startDate = new Date(now.getFullYear(), now.getMonth() - months, 1)
-    }
+    const timeFilter = timeRange === 'all' ? 0 : parseInt(timeRange) * 24 * 60 * 60 * 1000
+    const filteredBills = billData.filter(bill => 
+      bill.gigabyte_package.toString() === selectedGB &&
+      (timeRange === 'all' || new Date(bill.updated_at).getTime() > now.getTime() - timeFilter)
+    )
 
-    const monthsData = []
-
-    for (let currentDate = new Date(startDate); currentDate <= now; currentDate.setMonth(currentDate.getMonth() + 1)) {
-      const monthData: {
-        date: string;
-        Turkcell: number;
-        Vodafone: number;
-        "Türk Telekom": number;
-        Netgsm: number;
-        [key: string]: string | number;
-      } = {
-        date: currentDate.toISOString().slice(0, 7),
-        Turkcell: 0,
-        Vodafone: 0,
-        "Türk Telekom": 0,
-        Netgsm: 0,
-      }
-
-      billData.forEach(bill => {
-        if (bill.gigabyte_package.toString() === selectedGB && new Date(bill.contract_start_date) <= currentDate) {
-          monthData[bill.provider_name] = bill.bill_price
-        }
-      })
-
-      monthsData.push(monthData)
-    }
-
-    return monthsData
+    return filteredBills.map(bill => ({
+      date: new Date(bill.updated_at).toISOString().split('T')[0],
+      price: bill.bill_price,
+      provider: bill.provider_name,
+    })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
   }, [billData, selectedGB, timeRange])
+
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error}</div>
+  if (billData.length === 0) return <div>No data available</div>
 
   return (
     <Card>
@@ -144,77 +113,82 @@ export function PriceActionChart() {
         </Select>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
-          <AreaChart data={chartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value)
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  year: "numeric",
-                })
-              }}
-            />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => `₺${value}`}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={
-                <ChartTooltipContent
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
-                      month: "long",
-                      year: "numeric",
+        {filteredData.length > 0 ? (
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[400px] w-full"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={filteredData}>
+                <defs>
+                  {Array.from(new Set(filteredData.map(item => item.provider))).map((provider, index) => (
+                    <linearGradient key={provider} id={`fill${provider}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop
+                        offset="5%"
+                        stopColor={`hsl(${index * 137.5 % 360}, 70%, 50%)`}
+                        stopOpacity={0.8}
+                      />
+                      <stop
+                        offset="95%"
+                        stopColor={`hsl(${index * 137.5 % 360}, 70%, 50%)`}
+                        stopOpacity={0.1}
+                      />
+                    </linearGradient>
+                  ))}
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(value) => {
+                    const date = new Date(value)
+                    return date.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
                     })
                   }}
-                  indicator="dot"
+                  interval="preserveStartEnd"
+                  minTickGap={50}
                 />
-              }
-            />
-            <Area
-              type="monotone"
-              dataKey="Turkcell"
-              stroke={chartConfig.Turkcell.color}
-              fill={chartConfig.Turkcell.color}
-              fillOpacity={0.1}
-            />
-            <Area
-              type="monotone"
-              dataKey="Vodafone"
-              stroke={chartConfig.Vodafone.color}
-              fill={chartConfig.Vodafone.color}
-              fillOpacity={0.1}
-            />
-            <Area
-              type="monotone"
-              dataKey="Türk Telekom"
-              stroke={chartConfig["Türk Telekom"].color}
-              fill={chartConfig["Türk Telekom"].color}
-              fillOpacity={0.1}
-            />
-            <Area
-              type="monotone"
-              dataKey="Netgsm"
-              stroke={chartConfig.Netgsm.color}
-              fill={chartConfig.Netgsm.color}
-              fillOpacity={0.1}
-            />
-            <ChartLegend content={<ChartLegendContent />} />
-          </AreaChart>
-        </ChartContainer>
+                <YAxis
+                  tickFormatter={(value) => `₺${value}`}
+                  domain={['auto', 'auto']}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={
+                    <ChartTooltipContent
+                      labelFormatter={(value) => {
+                        return new Date(value).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
+                      }}
+                      indicator="dot"
+                    />
+                  }
+                />
+                {Array.from(new Set(filteredData.map(item => item.provider))).map((provider, index) => (
+                  <Area
+                    key={provider}
+                    type="monotone"
+                    dataKey="price"
+                    name={provider as string}
+                    data={filteredData.filter(item => item.provider === provider)}
+                    fill={`url(#fill${provider})`}
+                    stroke={`hsl(${index * 137.5 % 360}, 70%, 50%)`}
+                  />
+                ))}
+                <ChartLegend content={<ChartLegendContent />} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        ) : (
+          <div>No data available for the selected filters</div>
+        )}
       </CardContent>
     </Card>
   )
