@@ -45,7 +45,6 @@ export function BillDataProvider({ children }: { children: React.ReactNode }) {
           table: 'user_bills'
         },
         (payload) => {
-          console.log('Change received!', payload)
           fetchInitialData(); // Refetch all data when a change occurs
         }
       )

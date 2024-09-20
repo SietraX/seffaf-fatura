@@ -6,6 +6,7 @@ import ProviderDistributionChart from '@/components/provider-distribution-chart'
 import { BillDataProvider } from '@/contexts/BillDataContext'
 import { DataTableContainer } from '@/components/data-table-container'
 import { PriceActionChart } from '@/components/price-action-chart'
+import { GigabytePackageDistributionChart } from '@/components/gigabyte-package-distribution-chart'
 
 export default function Home() {
   return (
@@ -15,8 +16,9 @@ export default function Home() {
         <Suspense fallback={<div>Loading bill chart...</div>}>
           <BillChart />
         </Suspense>
-        <Suspense fallback={<div>Loading bill chart...</div>}>
+        <Suspense fallback={<div>Loading provider distribution chart...</div>}>
           <ProviderDistributionChart />
+          <GigabytePackageDistributionChart />
         </Suspense>
         <Suspense fallback={<div>Loading bill data table...</div>}>
           <DataTableContainer />
@@ -24,8 +26,10 @@ export default function Home() {
         <Suspense fallback={<div>Loading price action chart...</div>}>
           <PriceActionChart />
         </Suspense>
+        <Suspense fallback={<div>Loading submit bill button...</div>}>
+          <SubmitBillButton />
+        </Suspense>
       </BillDataProvider>
-      <SubmitBillButton />
     </main>
   )
 }
