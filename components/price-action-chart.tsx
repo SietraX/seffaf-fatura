@@ -62,7 +62,14 @@ export function PriceActionChart() {
 
     for (let i = 0; i < 24; i++) {
       const currentDate = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1)
-      const monthData = {
+      const monthData: {
+        date: string;
+        Turkcell: number;
+        Vodafone: number;
+        "Türk Telekom": number;
+        Netgsm: number;
+        [key: string]: string | number;
+      } = {
         date: currentDate.toISOString().slice(0, 7),
         Turkcell: 0,
         Vodafone: 0,
