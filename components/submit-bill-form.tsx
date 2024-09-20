@@ -11,6 +11,8 @@ import { useSubmitBill } from '@/hooks/useSubmitBill'
 import { ReCaptcha } from '@/components/recaptcha'
 import { BillFormData } from '@/types/bill'
 import { useToast } from '@/hooks/use-toast'
+import { generateBillStartDate } from '@/utils/generateBillStartDate'
+import { monthNameToNumber } from '@/utils/monthNameToNumber'
 
 const providers = ['Turkcell', 'Türk Telekom', 'Vodafone', 'Netgsm']
 const gigabytePackages = [4,5,6,8,10,12,15,16,20,25,30,40,50,60,75,80,100,150]
@@ -43,7 +45,18 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
       })
       return
     }
-    const success = await submitBill({ ...formData, recaptchaToken })
+    const monthName = formData.contract_start_month.split(' ')[0]
+    const monthNumber = monthNameToNumber[monthName]
+    if (!monthNumber) {
+      toast({
+        title: 'Hata',
+        description: 'Geçersiz ay seçimi.',
+        variant: 'destructive',
+      })
+      return
+    }
+    const contractStartDate = generateBillStartDate(monthNumber)
+    const success = await submitBill({ ...formData, recaptchaToken, contract_start_date: contractStartDate })
     if (success) {
       onSubmissionComplete()
     } else {

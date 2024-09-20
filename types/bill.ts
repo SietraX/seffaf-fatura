@@ -5,4 +5,5 @@ export interface BillFormData {
   sms_limit: number
   bill_price: number
   contract_start_month: string
+  contract_start_date?: Date
 }

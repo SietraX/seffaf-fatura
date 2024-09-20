@@ -2,15 +2,11 @@ import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
 import { BillFormData } from '@/types/bill'
+import { monthNameToNumber } from '@/utils/monthNameToNumber'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 const recaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY!
-
-const monthNameToNumber: { [key: string]: number } = {
-  'Ocak': 1, 'Şubat': 2, 'Mart': 3, 'Nisan': 4, 'Mayıs': 5, 'Haziran': 6,
-  'Temmuz': 7, 'Ağustos': 8, 'Eylül': 9, 'Ekim': 10, 'Kasım': 11, 'Aralık': 12
-};
 
 async function verifyRecaptcha(token: string) {
   const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
@@ -38,7 +34,7 @@ export async function POST(request: Request) {
 
   try {
     const billData = await request.json()
-    const { recaptchaToken, ...billDetails } = billData
+    const { recaptchaToken, contract_start_date, ...billDetails } = billData
 
     // Verify reCAPTCHA
     const isRecaptchaValid = await verifyRecaptcha(recaptchaToken)
@@ -47,6 +43,7 @@ export async function POST(request: Request) {
     }
 
     billDetails.user_id = userId
+    billDetails.contract_start_date = new Date(contract_start_date).toISOString()
 
     // Convert month name to number
     const monthParts = billData.contract_start_month.split(' ')

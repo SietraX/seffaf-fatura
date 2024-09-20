@@ -1,6 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
 
 export interface BillData {
   provider_name: string;
@@ -9,6 +10,7 @@ export interface BillData {
   sms_limit: number;
   bill_price: number;
   contract_start_month: number;
+  contract_start_date: string;
   updated_at: string;
 }
 
@@ -18,6 +20,11 @@ interface BillDataContextType {
   error: string | null;
 }
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
 const BillDataContext = createContext<BillDataContextType | undefined>(undefined);
 
 export function BillDataProvider({ children }: { children: React.ReactNode }) {
@@ -26,24 +33,44 @@ export function BillDataProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch('/api/get-bill-data');
-        if (response.ok) {
-          const data: BillData[] = await response.json();
-          setBillData(data);
-        } else {
-          setError('Failed to fetch bill data.');
-        }
-      } catch (error) {
-        setError('An error occurred while fetching bill data.');
-      } finally {
-        setIsLoading(false);
-      }
-    }
+    fetchInitialData();
 
-    fetchData();
+    const subscription = supabase
+      .channel('table-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_bills'
+        },
+        (payload) => {
+          fetchInitialData(); // Refetch all data when a change occurs
+        }
+      )
+      .subscribe()
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
+
+  const fetchInitialData = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('user_bills')
+        .select('provider_name, gigabyte_package, voice_call_limit, sms_limit, bill_price, contract_start_month, contract_start_date, updated_at');
+
+      if (error) throw error;
+
+      setBillData(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setError('Failed to fetch data');
+      setIsLoading(false);
+    }
+  };
 
   return (
     <BillDataContext.Provider value={{ billData, isLoading, error }}>

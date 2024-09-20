@@ -7,7 +7,10 @@ import {
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
 } from "@tanstack/react-table";
+import { ArrowUp, ArrowDown } from "lucide-react";
 
 import {
   Table,
@@ -37,15 +40,29 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 10,
-      },
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: (updater) => {
+      setSorting((old) => {
+        const newSorting = typeof updater === 'function' ? updater(old) : updater;
+        
+        // If the new sorting is empty, toggle the last sorted column
+        if (newSorting.length === 0 && old.length > 0) {
+          const lastSort = old[0];
+          return [{ ...lastSort, desc: !lastSort.desc }];
+        }
+        
+        return newSorting;
+      });
+    },
+    state: {
+      sorting,
     },
   });
 
@@ -141,12 +158,30 @@ export function DataTable<TData, TValue>({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
+                      {header.isPlaceholder ? null : (
+                        <div
+                          {...{
+                            className: header.column.getCanSort()
+                              ? "cursor-pointer select-none flex items-center"
+                              : "",
+                            onClick: () => {
+                              header.column.toggleSorting();
+                            },
+                          }}
+                        >
+                          {flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
+                          <span className="ml-2">
+                            {header.column.getIsSorted() === "asc" ? (
+                              <ArrowUp className="h-4 w-4" />
+                            ) : header.column.getIsSorted() === "desc" ? (
+                              <ArrowDown className="h-4 w-4" />
+                            ) : null}
+                          </span>
+                        </div>
+                      )}
                     </TableHead>
                   );
                 })}
