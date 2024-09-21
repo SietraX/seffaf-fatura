@@ -1,45 +1,39 @@
 import { Suspense } from "react";
 import BillChart from "@/components/bill-chart";
 import { CardContainer } from "@/components/card-container";
-import { ProviderDistributionChart } from "@/components/provider-distribution-chart";
 import { BillDataProvider } from "@/contexts/BillDataContext";
 import { DataTableContainer } from "@/components/data-table-container";
 import { PriceActionChart } from "@/components/price-action-chart";
-import { GigabytePackageDistributionChart } from "@/components/gigabyte-package-distribution-chart";
-import { ContractStartMonthChart } from "@/components/contract_start_month_chart";
-import { SubmitBillContainer } from "@/components/submit-bill-container";
-import { FAQ } from "@/components/faq";
-import { Footer } from "@/components/footer";
+import { PieChartContainer } from "@/components/pie-chart-container";
 
 export default function Dashboard() {
   return (
     <BillDataProvider>
-      <main className="container mx-auto px-4 py-8">
-        <CardContainer />
-        <Suspense fallback={<div>Loading bill chart...</div>}>
-          <div className="pt-4">
-            <BillChart />
+      <div className="min-h-screen p-4 md:p-8 bg-gray-50">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 auto-rows-auto">
+          <div className="md:col-span-1 h-[200px] overflow-auto">
+            <CardContainer />
           </div>
-        </Suspense>
-        <Suspense fallback={<div>Loading distribution charts...</div>}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <ProviderDistributionChart />
-            <ContractStartMonthChart />
-            <GigabytePackageDistributionChart />
+          <div className="md:col-span-1 h-[200px] overflow-auto">
+            <PieChartContainer />
           </div>
-        </Suspense>
-        <Suspense fallback={<div>Loading bill data table...</div>}>
-          <div className="pt-4">
-            <DataTableContainer />
+          <div className="md:col-span-1 md:row-span-2">
+            <Suspense fallback={<div>Loading bill chart...</div>}>
+              <DataTableContainer />              
+            </Suspense>
           </div>
-        </Suspense>
-        <Suspense fallback={<div>Loading price action chart...</div>}>
-          <div className="pt-4">
-            <PriceActionChart />
+          <div className="md:col-span-1">
+            <Suspense fallback={<div>Loading bill data...</div>}>
+              <BillChart />
+            </Suspense>
           </div>
-        </Suspense>
-      </main>
-      <Footer />
+          <div className="md:col-span-1">
+            <Suspense fallback={<div>Loading price action chart...</div>}>
+              <PriceActionChart />
+            </Suspense>
+          </div>
+        </div>
+      </div>
     </BillDataProvider>
   );
 }
