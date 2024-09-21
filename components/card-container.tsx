@@ -3,7 +3,6 @@
 import React, { useMemo } from 'react'
 import { CustomCard } from '@/components/ui/custom-card'
 import { useBillData } from '@/contexts/BillDataContext'
-import ProviderDistributionChart from '@/components/provider-distribution-chart'
 
 interface MostSelectedGB {
   gbSize: number;
@@ -70,7 +69,7 @@ export function CardContainer() {
     : ((stats.last24Hours - stats.prevDay) / stats.prevDay * 100).toFixed(1)
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       <CustomCard
         title="Total Submissions"
         content={<div className="text-4xl font-bold">{stats.total}</div>}

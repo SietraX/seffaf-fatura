@@ -4,17 +4,6 @@ import React, { useState, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { useBillData } from '@/contexts/BillDataContext';
 
-interface BillData {
-  provider_name: string;
-  bill_price: number;
-  gigabyte_package: number;
-}
-
-interface ChartData {
-  provider_name: string;
-  averageBill: number;
-}
-
 const colors = {
   'Turkcell': '#ffc658',
   'Vodafone': '#ff8042',
@@ -23,7 +12,6 @@ const colors = {
 };
 
 const gbPackages = [10, 15, 20, 25, 30, 40, 50];
-const providers = ['Turkcell', 'Vodafone', 'Türk Telekom', 'Netgsm'];
 
 export default function BillChart() {
   const { billData, isLoading, error } = useBillData();
