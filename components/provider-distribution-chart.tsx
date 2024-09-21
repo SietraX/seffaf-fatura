@@ -1,13 +1,21 @@
 'use client'
 
-import React, { useMemo } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import React, { useMemo, useState, useEffect } from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
 import { useBillData } from '@/contexts/BillDataContext';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ChartConfig, ChartContainer, ChartStyle, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 
-const COLORS = ['#00C49F', '#FFBB28', '#0088FE', '#FF8042'];
+const COLORS = ['#00C49F', '#FFBB28', '#0088FE', '#FF8042', '#FF6663'];
 
-export default function ProviderDistributionChart() {
+const chartConfig: ChartConfig = {
+  users: { label: "Users" },
+};
+
+export function ProviderDistributionChart() {
   const { billData, isLoading, error } = useBillData();
+  const [activeProvider, setActiveProvider] = useState<string | null>(null);
 
   const processedData = useMemo(() => {
     if (!billData.length) return [];
@@ -17,60 +25,117 @@ export default function ProviderDistributionChart() {
       providerCounts[bill.provider_name] = (providerCounts[bill.provider_name] || 0) + 1;
     });
 
-    return Object.entries(providerCounts).map(([provider_name, count]) => ({
-      name: provider_name,
-      value: count,
-    }));
+    return Object.entries(providerCounts)
+      .map(([name, count], index) => ({
+        name,
+        value: count,
+        fill: COLORS[index % COLORS.length]
+      }))
+      .sort((a, b) => b.value - a.value);
   }, [billData]);
 
-  if (isLoading) {
-    return <div>Loading provider distribution...</div>;
-  }
+  useEffect(() => {
+    if (processedData.length > 0 && !activeProvider) {
+      setActiveProvider(processedData[0].name);
+    }
+  }, [processedData, activeProvider]);
 
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
+  const activeIndex = useMemo(() => {
+    const index = processedData.findIndex(item => item.name === activeProvider);
+    return index !== -1 ? index : 0;
+  }, [activeProvider, processedData]);
 
-  if (!processedData.length) {
-    return <div>No provider distribution data available.</div>;
-  }
+  if (isLoading) return <div>Loading provider distribution...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+  if (!processedData.length) return <div>No provider distribution data available.</div>;
 
   const total = processedData.reduce((sum, item) => sum + item.value, 0);
 
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name }: any) => {
-    const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
+  const renderActiveShape = (props: any) => {
+    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
     return (
-      <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-        {`${name} ${(percent * 100).toFixed(0)}%`}
-      </text>
+      <g>
+        <Sector
+          cx={cx}
+          cy={cy}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          fill={fill}
+        />
+        <Sector
+          cx={cx}
+          cy={cy}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          innerRadius={outerRadius + 6}
+          outerRadius={outerRadius + 10}
+          fill={fill}
+        />
+      </g>
     );
   };
 
   return (
-    <div className="w-full h-[200px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <Pie
-            data={processedData}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            outerRadius={80}
-            fill="#8884d8"
-            dataKey="value"
-            label={renderCustomizedLabel}
-          >
-            {processedData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip formatter={(value, name) => [`${value} (${((value as number / total) * 100).toFixed(2)}%)`, name]} />
-        </PieChart>
-      </ResponsiveContainer>
-    </div>
+    <Card className="flex flex-col">
+      <ChartStyle id="provider-distribution-chart" config={chartConfig} />
+      <CardHeader className="flex-row items-start space-y-0 pb-0">
+        <div className="grid gap-1">
+          <CardTitle>Provider Distribution</CardTitle>
+          <CardDescription>Distribution of users across mobile providers</CardDescription>
+        </div>
+      </CardHeader>
+      <CardContent className="flex flex-1 justify-center pb-0">
+        <ChartContainer id="provider-distribution-chart" config={chartConfig} className="mx-auto aspect-square w-full max-w-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+              <Pie
+                data={processedData}
+                cx="50%"
+                cy="50%"
+                innerRadius={50}
+                outerRadius={80}
+                dataKey="value"
+                activeIndex={activeIndex}
+                activeShape={renderActiveShape}
+                onMouseEnter={(_, index) => {
+                  if (processedData[index]) {
+                    setActiveProvider(processedData[index].name);
+                  }
+                }}
+              >
+                {processedData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                ))}
+              </Pie>
+              {/* Custom label */}
+              <text
+                x="50%"
+                y="50%"
+                textAnchor="middle"
+                dominantBaseline="middle"
+              >
+                <tspan
+                  x="50%"
+                  y="50%"
+                  className="fill-foreground text-3xl font-bold"
+                >
+                  {processedData[activeIndex]?.value || 0}
+                </tspan>
+                <tspan
+                  x="50%"
+                  dy="24"
+                  className="fill-muted-foreground"
+                >
+                  Users
+                </tspan>
+              </text>
+            </PieChart>
+          </ResponsiveContainer>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 }

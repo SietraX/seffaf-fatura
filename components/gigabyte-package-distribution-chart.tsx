@@ -99,21 +99,6 @@ export function GigabytePackageDistributionChart() {
           <CardTitle>Gigabyte Package Distribution</CardTitle>
           <CardDescription>Distribution of users across GB package groups</CardDescription>
         </div>
-        <Select value={activePackage || ''} onValueChange={setActivePackage}>
-          <SelectTrigger className="ml-auto h-7 w-[130px] rounded-lg pl-2.5">
-            <SelectValue placeholder="Select group" />
-          </SelectTrigger>
-          <SelectContent align="end" className="rounded-xl">
-            {processedData.map((item) => (
-              <SelectItem key={item.name} value={item.name} className="rounded-lg [&_span]:flex">
-                <div className="flex items-center gap-2 text-xs">
-                  <span className="flex h-3 w-3 shrink-0 rounded-sm" style={{ backgroundColor: item.fill }} />
-                  {item.name}
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </CardHeader>
       <CardContent className="flex flex-1 justify-center pb-0">
         <ChartContainer id="gigabyte-package-chart" config={chartConfig} className="mx-auto aspect-square w-full max-w-[300px]">
