@@ -191,10 +191,10 @@ export function PriceActionChart() {
         </div>
         <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
           <Select value={selectedGB} onValueChange={setSelectedGB}>
-            <SelectTrigger className="w-[120px]" aria-label="Select GB package">
+            <SelectTrigger className="w-[120px] cursor-pointer" aria-label="Select GB package">
               <SelectValue placeholder="Select GB" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white">
               {gbOptions.map((gb) => (
                 <SelectItem key={gb} value={gb}>
                   {gb} GB
@@ -218,7 +218,7 @@ export function PriceActionChart() {
       </CardHeader>
       <CardContent className="pt-6">
         {filteredData.length > 0 ? (
-          <ChartContainer config={chartConfig} className="h-[400px]">
+          <ChartContainer config={chartConfig} className="h-[400px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
