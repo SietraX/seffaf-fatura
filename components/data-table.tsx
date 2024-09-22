@@ -31,6 +31,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
+import { Button } from "@/components/ui/button";
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -157,8 +159,8 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-grow overflow-auto">
+    <div className="space-y-4">
+      <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -226,30 +228,26 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="mt-auto pt-4">
+      <div className="flex items-center justify-between space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
         <Pagination>
-          <PaginationContent className="w-[400px] justify-end">
-            {" "}
-            {/* Fixed width */}
+          <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
                 onClick={() => table.previousPage()}
-                className={`cursor-pointer hover:bg-muted ${
-                  !table.getCanPreviousPage()
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }`}
+                aria-disabled={!table.getCanPreviousPage()}
+                className={!table.getCanPreviousPage() ? "opacity-50 cursor-not-allowed" : ""}
               />
             </PaginationItem>
             {renderPaginationItems()}
             <PaginationItem>
               <PaginationNext
                 onClick={() => table.nextPage()}
-                className={`cursor-pointer hover:bg-muted ${
-                  !table.getCanNextPage()
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }`}
+                aria-disabled={!table.getCanNextPage()}
+                className={!table.getCanNextPage() ? "opacity-50 cursor-not-allowed" : ""}
               />
             </PaginationItem>
           </PaginationContent>

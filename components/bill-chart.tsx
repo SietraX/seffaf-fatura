@@ -13,12 +13,7 @@ import {
   Cell,
 } from "recharts";
 import { useBillData } from "@/contexts/BillDataContext";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const colors = {
@@ -109,9 +104,9 @@ export default function BillChart() {
             <Tooltip
               formatter={(value: number) => [
                 `${value.toFixed(2)} TL`,
-                "Average Bill",
+                "Ortalama Ücret",
               ]}
-              labelFormatter={(label) => `Provider: ${label}`}
+              labelFormatter={(label) => `Operatör: ${label}`}
             />
             <Bar dataKey="averageBill" fill="#8884d8" name="Average Bill">
               {processedData.map((entry, index) => (

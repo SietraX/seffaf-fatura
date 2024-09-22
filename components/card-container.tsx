@@ -63,8 +63,16 @@ export function CardContainer() {
     return { ...result, mostSelectedGB };
   }, [billData]);
 
-  if (isLoading) return <div className="h-full flex items-center justify-center">Loading...</div>;
-  if (error) return <div className="h-full flex items-center justify-center">Error: {error}</div>;
+  if (isLoading)
+    return (
+      <div className="h-full flex items-center justify-center">Loading...</div>
+    );
+  if (error)
+    return (
+      <div className="h-full flex items-center justify-center">
+        Error: {error}
+      </div>
+    );
 
   const percentChange30Days =
     stats.prev30Days === 0
@@ -85,11 +93,15 @@ export function CardContainer() {
         );
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 h-full">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
       <CustomCard
         title="Toplam Kullanıcı"
-        content={<div className="text-2xl font-bold">{stats.total}</div>}
-        footer={<div className="text-xs text-muted-foreground">kişi katılım gösterdi</div>}
+        content={<div className="text-xl sm:text-2xl font-bold">{stats.total}</div>}
+        footer={
+          <div className="text-xs text-muted-foreground">
+            kişi katılım gösterdi
+          </div>
+        }
       />
       <CustomCard
         title="Aylık"
