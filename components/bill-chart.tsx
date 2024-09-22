@@ -68,15 +68,16 @@ export default function BillChart() {
   }
 
   return (
-    <Card className="h-full flex flex-col ">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+    <Card className="h-full flex flex-col">
+      <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 pb-2">
         <CardTitle className="text-base">Ortalama Tarife Ücretleri</CardTitle>
-        <div className="flex space-x-1">
+        <div className="flex flex-wrap gap-1">
           {gbPackages.map((gb) => (
             <Button
               key={gb}
               variant={selectedGB === gb ? "default" : "outline"}
               size="sm"
+              className="text-xs sm:text-sm px-1 sm:px-2"
               onClick={() => setSelectedGB(gb)}
             >
               {gb}GB
@@ -90,16 +91,17 @@ export default function BillChart() {
             data={processedData}
             margin={{
               top: 20,
-              right: 30,
-              left: 20,
+              right: 10,
+              left: 0,
               bottom: 5,
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="provider_name" />
+            <XAxis dataKey="provider_name" tick={{ fontSize: 10 }} />
             <YAxis
               domain={[0, maxBillPrice]}
               tickFormatter={(value) => `${value.toFixed(0)} TL`}
+              tick={{ fontSize: 10 }}
             />
             <Tooltip
               formatter={(value: number) => [

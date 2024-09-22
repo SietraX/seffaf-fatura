@@ -16,13 +16,13 @@ interface CustomCardProps {
 export function CustomCard({ title, content, footer }: CustomCardProps) {
   return (
     <Card className="flex flex-col h-full">
-      <CardHeader className="flex-shrink-0 py-2 px-3">
+      <CardHeader className="flex-shrink-0 py-1 sm:py-2 px-2 sm:px-3">
         <CardTitle className="text-xs sm:text-sm">{title}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow flex items-center justify-center">
+      <CardContent className="flex-grow flex items-center justify-center p-1 sm:p-2">
         {content}
       </CardContent>
-      {footer && <CardFooter className="text-xs sm:text-sm">{footer}</CardFooter>}
+      {footer && <CardFooter className="text-xs sm:text-sm p-1 sm:p-2">{footer}</CardFooter>}
     </Card>
   );
 }

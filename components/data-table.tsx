@@ -181,7 +181,7 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="text-xs sm:text-sm p-1 sm:p-2">
                       {header.isPlaceholder ? null : (
                         <div
                           {...{
@@ -220,7 +220,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="text-xs sm:text-sm p-1 sm:p-2">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -233,7 +233,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-24 text-center text-xs sm:text-sm"
                 >
                   No results.
                 </TableCell>
