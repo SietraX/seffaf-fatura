@@ -7,35 +7,35 @@ import { getTimeAgo } from "@/utils/timeAgo"
 export const columns: ColumnDef<BillData>[] = [
   {
     accessorKey: "provider_name",
-    header: "Provider",
+    header: "Operatör",
     sortingFn: (rowA, rowB, columnId) => {
       return (rowA.getValue(columnId) as string).localeCompare(rowB.getValue(columnId) as string);
     },
   },
   {
     accessorKey: "gigabyte_package",
-    header: "GB Package",
+    header: "GB",
     sortingFn: (rowA, rowB, columnId) => {
       return (rowA.getValue(columnId) as number) - (rowB.getValue(columnId) as number);
     },
   },
   {
     accessorKey: "voice_call_limit",
-    header: "Voice Call Limit",
+    header: "Dakika",
     sortingFn: (rowA, rowB, columnId) => {
       return (rowA.getValue(columnId) as number) - (rowB.getValue(columnId) as number);
     },
   },
   {
     accessorKey: "sms_limit",
-    header: "SMS Limit",
+    header: "SMS",
     sortingFn: (rowA, rowB, columnId) => {
       return (rowA.getValue(columnId) as number) - (rowB.getValue(columnId) as number);
     },
   },
   {
     accessorKey: "bill_price",
-    header: "Bill Price",
+    header: "Tarife Ücreti",
     sortingFn: (rowA, rowB, columnId) => {
       return (rowA.getValue(columnId) as number) - (rowB.getValue(columnId) as number);
     },
@@ -49,20 +49,12 @@ export const columns: ColumnDef<BillData>[] = [
     },
   },
   {
-    accessorKey: "contract_start_month",
-    header: "Contract Start Month",
-    sortingFn: (rowA, rowB, columnId) => {
-      return (rowA.getValue(columnId) as number) - (rowB.getValue(columnId) as number);
-    },
-    cell: ({ row }) => {
-      const month = row.getValue("contract_start_month") as number
-      const date = new Date(2000, month - 1, 1)
-      return date.toLocaleString('default', { month: 'long' })
-    },
+    accessorKey: "contract_start_month_turkish",
+    header: "Başlangıç Ayı",
   },
   {
     accessorKey: "updated_at",
-    header: "Last Updated",
+    header: "Güncelleme Tarihi",
     sortingFn: (rowA, rowB, columnId) => {
       return new Date(rowA.getValue(columnId) as string).getTime() - new Date(rowB.getValue(columnId) as string).getTime();
     },
@@ -72,3 +64,11 @@ export const columns: ColumnDef<BillData>[] = [
     },
   },
 ]
+
+// You may need to update your BillData type to include the new field:
+export interface BillData {
+  // ... other fields ...
+  contract_start_month: number;
+  contract_start_month_turkish: string;
+  // ... other fields ...
+}
