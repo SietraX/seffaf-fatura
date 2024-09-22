@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -10,8 +10,8 @@ import {
   getSortedRowModel,
   SortingState,
   PaginationState,
-} from "@tanstack/react-table"
-import { ArrowUp, ArrowDown } from "lucide-react"
+} from "@tanstack/react-table";
+import { ArrowUp, ArrowDown } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -19,7 +19,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
   Pagination,
   PaginationContent,
@@ -28,8 +28,8 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 
@@ -66,12 +66,12 @@ export function DataTable<TData, TValue>({
       else if (height < 1000) newPageSize = 7;
       else newPageSize = 10;
 
-      setPagination(prev => ({ ...prev, pageSize: newPageSize }));
+      setPagination((prev) => ({ ...prev, pageSize: newPageSize }));
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const table = useReactTable({
@@ -183,8 +183,8 @@ export function DataTable<TData, TValue>({
     return items;
   };
 
-  const canPreviousPage = table.getCanPreviousPage()
-  const canNextPage = table.getCanNextPage()
+  const canPreviousPage = table.getCanPreviousPage();
+  const canNextPage = table.getCanNextPage();
 
   return (
     <div className="space-y-4">
@@ -195,7 +195,10 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="text-xs sm:text-sm p-1 sm:p-2">
+                    <TableHead
+                      key={header.id}
+                      className="text-xs sm:text-sm p-1 sm:p-2"
+                    >
                       {header.isPlaceholder ? null : (
                         <div
                           {...{
@@ -234,7 +237,10 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-xs sm:text-sm p-1 sm:p-2">
+                    <TableCell
+                      key={cell.id}
+                      className="text-xs sm:text-sm p-1 sm:p-2"
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -263,10 +269,7 @@ export function DataTable<TData, TValue>({
               {canPreviousPage ? (
                 <PaginationPrevious
                   onClick={() => table.previousPage()}
-                  className={cn(
-                    "cursor-pointer hover:bg-muted",
-                    "select-none"
-                  )}
+                  className={cn("cursor-pointer hover:bg-muted", "select-none")}
                 >
                   Önceki
                 </PaginationPrevious>
@@ -281,10 +284,7 @@ export function DataTable<TData, TValue>({
               {canNextPage ? (
                 <PaginationNext
                   onClick={() => table.nextPage()}
-                  className={cn(
-                    "cursor-pointer hover:bg-muted",
-                    "select-none"
-                  )}
+                  className={cn("cursor-pointer hover:bg-muted", "select-none")}
                 >
                   Sonraki
                 </PaginationNext>

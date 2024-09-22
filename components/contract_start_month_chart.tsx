@@ -75,11 +75,11 @@ export function ContractStartMonthChart() {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="flex-shrink-0 py-2">
-        <CardTitle className="text-sm sm:text-base">Sözleşme Başlangıç Tarihi Dağılımı</CardTitle>
+        <CardTitle className="text-sm sm:text-base pt-3">Sözleşme Başlangıç Tarihi</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+          <BarChart data={chartData} margin={{ top: 10, right: 0, left: -40, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="month" tick={{ fontSize: 8 }} />
             <YAxis tick={{ fontSize: 8 }} />

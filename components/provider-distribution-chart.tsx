@@ -93,8 +93,8 @@ export function ProviderDistributionChart() {
                 data={processedData}
                 cx="50%"
                 cy="50%"
-                innerRadius={50}
-                outerRadius={80}
+                innerRadius={45}
+                outerRadius={70}
                 dataKey="value"
                 activeIndex={activeIndex}
                 activeShape={renderActiveShape}
@@ -127,7 +127,7 @@ export function ProviderDistributionChart() {
                   dy="24"
                   className="fill-muted-foreground"
                 >
-                  Users
+                  Kullanıcı
                 </tspan>
               </text>
             </PieChart>
