@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import React from "react";
+import React, { useState, useEffect } from "react"
 import {
   ColumnDef,
   flexRender,
@@ -9,9 +9,8 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   SortingState,
-} from "@tanstack/react-table";
-import { ArrowUp, ArrowDown } from "lucide-react";
-
+} from "@tanstack/react-table"
+import { ArrowUp, ArrowDown } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -19,8 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-
+} from "@/components/ui/table"
 import {
   Pagination,
   PaginationContent,
@@ -29,21 +27,35 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from "@/components/ui/pagination"
+
+import { Button } from "@/components/ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  pageSize: number;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  pageSize,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [pageSize, setPageSize] = useState(5)
 
+  useEffect(() => {
+    const handleResize = () => {
+      const height = window.innerHeight
+      if (height < 600) setPageSize(4)
+      else if (height < 800) setPageSize(5)
+      else if (height < 1000) setPageSize(7)
+      else setPageSize(10)
+    }
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
   const table = useReactTable({
     data,
     columns,
@@ -66,6 +78,10 @@ export function DataTable<TData, TValue>({
     },
     state: {
       sorting,
+      pagination: {
+        pageSize,
+        pageIndex: 0,
+      },
     },
     initialState: {
       pagination: {
@@ -157,9 +173,9 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-grow overflow-auto">
-        <Table>
+    <div className="space-y-4">
+      <div className="rounded-md border overflow-hidden">
+        <Table className="!overflow-hidden">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -226,30 +242,22 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="mt-auto pt-4">
-        <Pagination>
-          <PaginationContent className="w-[400px] justify-end">
-            {" "}
-            {/* Fixed width */}
+      <div className="flex items-center justify-between space-x-2">
+        <Pagination className="pb-6">
+          <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
                 onClick={() => table.previousPage()}
-                className={`cursor-pointer hover:bg-muted ${
-                  !table.getCanPreviousPage()
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }`}
+                aria-disabled={!table.getCanPreviousPage()}
+                className={!table.getCanPreviousPage() ? "opacity-50 cursor-not-allowed" : ""}
               />
             </PaginationItem>
             {renderPaginationItems()}
             <PaginationItem>
               <PaginationNext
                 onClick={() => table.nextPage()}
-                className={`cursor-pointer hover:bg-muted ${
-                  !table.getCanNextPage()
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }`}
+                aria-disabled={!table.getCanNextPage()}
+                className={!table.getCanNextPage() ? "opacity-50 cursor-not-allowed" : ""}
               />
             </PaginationItem>
           </PaginationContent>

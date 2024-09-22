@@ -13,13 +13,8 @@ import {
   Cell,
 } from "recharts";
 import { useBillData } from "@/contexts/BillDataContext";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const colors = {
   Turkcell: "#ffc658",
@@ -64,13 +59,6 @@ export default function BillChart() {
     return Math.max(...processedData.map((item) => item.averageBill), 100);
   }, [processedData]);
 
-  const gbOptions = useMemo(() => {
-    const options = Array.from(
-      new Set(billData.map((bill) => bill.gigabyte_package))
-    ).sort((a, b) => a - b);
-    return options;
-  }, [billData]);
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -80,74 +68,56 @@ export default function BillChart() {
   }
 
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader className="flex-row items-start space-y-0 pb-2">
-        <div className="grid gap-1">
-          <CardTitle className="text-base">Mobile Bill Comparison</CardTitle>
-          <CardDescription className="text-xs">
-            Average bill by provider for selected GB package
-          </CardDescription>
+    <Card className="h-full flex flex-col ">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-base">Ortalama Tarife Ücretleri</CardTitle>
+        <div className="flex space-x-1">
+          {gbPackages.map((gb) => (
+            <Button
+              key={gb}
+              variant={selectedGB === gb ? "default" : "outline"}
+              size="sm"
+              onClick={() => setSelectedGB(gb)}
+            >
+              {gb}GB
+            </Button>
+          ))}
         </div>
       </CardHeader>
       <CardContent className="flex-grow pb-2">
-        <div className="flex flex-col h-full">
-          <div className="flex-grow" style={{ minHeight: "200px" }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={processedData}
-                margin={{
-                  top: 20,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="provider_name" />
-                <YAxis
-                  label={{
-                    value: "Average Bill (TL)",
-                    angle: -90,
-                    position: "insideLeft",
-                  }}
-                  domain={[0, maxBillPrice]}
-                  tickFormatter={(value) => `${value.toFixed(0)} TL`}
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={processedData}
+            margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="provider_name" />
+            <YAxis
+              domain={[0, maxBillPrice]}
+              tickFormatter={(value) => `${value.toFixed(0)} TL`}
+            />
+            <Tooltip
+              formatter={(value: number) => [
+                `${value.toFixed(2)} TL`,
+                "Ortalama Ücret",
+              ]}
+              labelFormatter={(label) => `Operatör: ${label}`}
+            />
+            <Bar dataKey="averageBill" fill="#8884d8" name="Average Bill">
+              {processedData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={colors[entry.provider_name as keyof typeof colors]}
                 />
-                <Tooltip
-                  formatter={(value: number) => [
-                    `${value.toFixed(2)} TL`,
-                    "Average Bill",
-                  ]}
-                  labelFormatter={(label) => `Provider: ${label}`}
-                />
-                <Legend />
-                <Bar dataKey="averageBill" fill="#8884d8" name="Average Bill">
-                  {processedData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={colors[entry.provider_name as keyof typeof colors]}
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="mt-2 flex justify-center space-x-2">
-            {gbPackages.map((gb) => (
-              <button
-                key={gb}
-                onClick={() => setSelectedGB(gb)}
-                className={`px-2 py-1 text-xs rounded ${
-                  selectedGB === gb
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-gray-800"
-                }`}
-              >
-                {gb} GB
-              </button>
-            ))}
-          </div>
-        </div>
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
       </CardContent>
     </Card>
   );
