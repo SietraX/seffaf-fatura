@@ -9,6 +9,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   SortingState,
+  PaginationState,
 } from "@tanstack/react-table"
 import { ArrowUp, ArrowDown } from "lucide-react"
 import {
@@ -41,21 +42,37 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [pageSize, setPageSize] = useState(5)
+  const [{ pageIndex, pageSize }, setPagination] =
+    React.useState<PaginationState>({
+      pageIndex: 0,
+      pageSize: 5,
+    });
+
+  const pagination = React.useMemo(
+    () => ({
+      pageIndex,
+      pageSize,
+    }),
+    [pageIndex, pageSize]
+  );
 
   useEffect(() => {
     const handleResize = () => {
-      const height = window.innerHeight
-      if (height < 600) setPageSize(4)
-      else if (height < 800) setPageSize(5)
-      else if (height < 1000) setPageSize(7)
-      else setPageSize(10)
-    }
+      const height = window.innerHeight;
+      let newPageSize;
+      if (height < 600) newPageSize = 4;
+      else if (height < 800) newPageSize = 5;
+      else if (height < 1000) newPageSize = 7;
+      else newPageSize = 10;
 
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+      setPagination(prev => ({ ...prev, pageSize: newPageSize }));
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const table = useReactTable({
     data,
     columns,
@@ -76,17 +93,10 @@ export function DataTable<TData, TValue>({
         return newSorting;
       });
     },
+    onPaginationChange: setPagination,
     state: {
       sorting,
-      pagination: {
-        pageSize,
-        pageIndex: 0,
-      },
-    },
-    initialState: {
-      pagination: {
-        pageSize: pageSize,
-      },
+      pagination,
     },
   });
 
