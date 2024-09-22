@@ -1,13 +1,12 @@
 "use client"
 
 import React, { useMemo } from "react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
 import { useBillData } from '@/contexts/BillDataContext'
 
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -19,6 +18,22 @@ interface MonthlyData {
   monthIndex: number;
   [key: string]: string | number; // Allow any string key with number value
 }
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-2 border border-gray-300 rounded shadow-md text-xs">
+        <p className="font-bold">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} style={{ color: entry.color }}>
+            {entry.name}: {entry.value}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
 
 export function ContractStartMonthChart() {
   const { billData, isLoading, error } = useBillData();
@@ -64,14 +79,23 @@ export function ContractStartMonthChart() {
       </CardHeader>
       <CardContent className="flex-grow">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <BarChart data={chartData} margin={{ top: 0, right: -5, left: -35, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
+            <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+            <YAxis tick={{ fontSize: 10 }} />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
+              wrapperStyle={{ zIndex: 100 }}
+              position={{ y: -50 }}
+            />
             {providers.map((provider, index) => (
-              <Bar key={provider} dataKey={provider} stackId="a" fill={COLORS[index % COLORS.length]} />
+              <Bar 
+                key={provider} 
+                dataKey={provider} 
+                stackId="a" 
+                fill={COLORS[index % COLORS.length]}
+              />
             ))}
           </BarChart>
         </ResponsiveContainer>
