@@ -41,11 +41,12 @@ export function DataTableContainer() {
   const gbPackages = useMemo(() => {
     const packages = selectedProvider
       ? Array.from(
-          new Set(filteredByProvider.map((bill) => bill.gigabyte_package))
+          new Set(billData.filter(bill => bill.provider_name === selectedProvider)
+            .map((bill) => bill.gigabyte_package))
         )
       : Array.from(new Set(billData.map((bill) => bill.gigabyte_package)));
     return packages.sort((a, b) => a - b);
-  }, [billData, filteredByProvider, selectedProvider]);
+  }, [billData, selectedProvider]);
 
   const filteredData = useMemo(
     () =>
@@ -64,7 +65,19 @@ export function DataTableContainer() {
 
   const handleProviderChange = (provider: string | null) => {
     setSelectedProvider(provider);
-    setSelectedGBPackage(null);
+    
+    if (provider) {
+      // Get GB packages for the selected provider
+      const providerGBPackages = Array.from(
+        new Set(billData.filter(bill => bill.provider_name === provider)
+          .map(bill => bill.gigabyte_package))
+      );
+      
+      // Check if the currently selected GB package is available for the new provider
+      if (selectedGBPackage && !providerGBPackages.includes(selectedGBPackage)) {
+        setSelectedGBPackage(null);
+      }
+    }
   };
 
   return (
