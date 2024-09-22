@@ -95,8 +95,7 @@ export function GigabytePackageDistributionChart() {
     <Card className="h-full flex flex-col">
       <ChartStyle id="gigabyte-package-chart" config={chartConfig} />
       <CardHeader className="flex-shrink-0">
-        <CardTitle>Gigabyte Package Distribution</CardTitle>
-        <CardDescription>Distribution of users across GB package groups</CardDescription>
+        <CardTitle>GB Tercihleri</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow">
         <ChartContainer id="gigabyte-package-chart" config={chartConfig} className="h-full w-full">

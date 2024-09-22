@@ -81,8 +81,7 @@ export function ProviderDistributionChart() {
     <Card className="h-full flex flex-col">
       <CardHeader className="flex-row items-start space-y-0 pb-2">
         <div className="grid gap-1">
-          <CardTitle className="text-base">Provider Distribution</CardTitle>
-          <CardDescription className="text-xs">Distribution of users across mobile providers</CardDescription>
+          <CardTitle className="text-base">Kullanıcı Dağılımı</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="flex-grow pb-2">

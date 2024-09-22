@@ -16,7 +16,7 @@ export default function Dashboard() {
             <div className="h-[30vh]">
               <PieChartContainer />
             </div>
-            <div className="h-[55vh] overflow-auto">
+            <div className="h-[57vh] overflow-auto">
               <Suspense fallback={<div>Loading bill chart...</div>}>
                 <DataTableContainer />
               </Suspense>
@@ -25,10 +25,10 @@ export default function Dashboard() {
 
           {/* Second column */}
           <div className="flex flex-col space-y-4 overflow-hidden h-full">
-            <div className="h-[20vh]">
+            <div className="h-[15vh]">
               <CardContainer />
             </div>
-            <div className="h-[35vh] overflow-auto">
+            <div className="h-[35vh]">
               <Suspense fallback={<div>Loading bill data...</div>}>
                 <BillChart />
               </Suspense>

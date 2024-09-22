@@ -60,8 +60,7 @@ export function ContractStartMonthChart() {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="flex-shrink-0">
-        <CardTitle>Contract Start Month Distribution</CardTitle>
-        <CardDescription>Number of contracts starting each month by provider</CardDescription>
+        <CardTitle>Sözleşme Başlangıç Tarihi Dağılımı</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow">
         <ResponsiveContainer width="100%" height="100%">

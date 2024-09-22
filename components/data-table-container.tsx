@@ -115,7 +115,7 @@ export function DataTableContainer() {
         </div>
       </CardHeader>
       <CardContent className="flex-grow overflow-hidden">
-        <DataTable columns={columns} data={filteredData} pageSize={8} />
+        <DataTable columns={columns} data={filteredData} pageSize={7} />
       </CardContent>
     </Card>
   );

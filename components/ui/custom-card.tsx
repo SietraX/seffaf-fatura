@@ -9,12 +9,14 @@ interface CustomCardProps {
 
 export function CustomCard({ title, content, footer }: CustomCardProps) {
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
+    <Card className="flex flex-col h-full">
+      <CardHeader className="flex-shrink-0 py-2 px-3">
+        <CardTitle className="text-sm">{title}</CardTitle>
       </CardHeader>
-      <CardContent>{content}</CardContent>
-      {footer && <CardFooter>{footer}</CardFooter>}
+      <CardContent className="flex-grow flex items-center justify-center py-1 px-3">
+        {content}
+      </CardContent>
+      {footer && <CardFooter className="flex-shrink-0 py-1 px-3 pb-2 justify-center items-center">{footer}</CardFooter>}
     </Card>
   )
 }
