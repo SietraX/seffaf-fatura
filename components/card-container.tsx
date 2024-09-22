@@ -105,7 +105,7 @@ export function CardContainer() {
       />
       <CustomCard
         title="Aylık"
-        content={<div className="text-lg font-bold">{stats.last30Days}</div>}
+        content={<div className="text-xl sm:text-2xl font-bold">{stats.last30Days}</div>}
         footer={
           <div
             className={`text-xs ${
@@ -114,13 +114,13 @@ export function CardContainer() {
                 : "text-red-500"
             }`}
           >
-            {percentChange30Days}% önceki aya göre değişim
+            {percentChange30Days}% önceki aya göre
           </div>
         }
       />
       <CustomCard
         title="Günlük"
-        content={<div className="text-lg font-bold">{stats.last24Hours}</div>}
+        content={<div className="text-xl sm:text-2xl font-bold">{stats.last24Hours}</div>}
         footer={
           <div
             className={`text-xs ${
@@ -129,14 +129,14 @@ export function CardContainer() {
                 : "text-red-500"
             }`}
           >
-            {percentChange24Hours}% düne göre değişim
+            {percentChange24Hours}% düne göre
           </div>
         }
       />
       <CustomCard
-        title="En Çok Tercih Edilen GB Paketi"
+        title="En Çok Tercih Edilen GB"
         content={
-          <div className="text-lg font-bold">
+          <div className="text-xl sm:text-2xl font-bold">
             {stats.mostSelectedGB.gbSize || "N/A"} GB
           </div>
         }

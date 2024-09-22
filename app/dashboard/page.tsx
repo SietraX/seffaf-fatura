@@ -10,14 +10,14 @@ export default function Dashboard() {
   return (
     <BillDataProvider>
       <div className="flex justify-center bg-gray-50">
-        <div className="w-full max-w-[75%] p-4 md:p-4 overflow-hidden flex flex-col">
+        <div className="w-full max-w-[80%] p-4 md:p-4 overflow-hidden flex flex-col">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-grow">
             {/* First column */}
             <div className="flex flex-col space-y-4 order-2 lg:order-1">
               <div className="h-[300px] md:h-[400px] lg:h-[30vh]">
                 <PieChartContainer />
               </div>
-              <div className="h-[400px] md:h-[500px] lg:h-[57vh] overflow-auto">
+              <div className="h-[400px] md:h-[500px] lg:h-[56vh] overflow-hidden">
                 <Suspense fallback={<div>Loading bill chart...</div>}>
                   <DataTableContainer />
                 </Suspense>
@@ -26,15 +26,15 @@ export default function Dashboard() {
 
             {/* Second column */}
             <div className="flex flex-col space-y-4 order-1 lg:order-2">
-              <div className="h-[200px] md:h-[250px] lg:h-[15vh]">
+              <div className="h-[200px] md:h-[250px] lg:h-[17vh]">
                 <CardContainer />
               </div>
-              <div className="h-[300px] md:h-[350px] lg:h-[35vh]">
+              <div className="h-[300px] md:h-[350px] lg:h-[33vh]">
                 <Suspense fallback={<div>Loading bill data...</div>}>
                   <BillChart />
                 </Suspense>
               </div>
-              <div className="h-[300px] md:h-[350px] lg:h-[35vh]">
+              <div className="h-[300px] md:h-[350px] lg:h-[34vh]">
                 <Suspense fallback={<div>Loading price action chart...</div>}>
                   <PriceActionChart />
                 </Suspense>
