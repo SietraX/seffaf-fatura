@@ -29,6 +29,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
+import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button";
 
@@ -182,6 +183,9 @@ export function DataTable<TData, TValue>({
     return items;
   };
 
+  const canPreviousPage = table.getCanPreviousPage()
+  const canNextPage = table.getCanNextPage()
+
   return (
     <div className="space-y-4">
       <div className="rounded-md border overflow-hidden">
@@ -256,19 +260,39 @@ export function DataTable<TData, TValue>({
         <Pagination className="pb-6">
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious
-                onClick={() => table.previousPage()}
-                aria-disabled={!table.getCanPreviousPage()}
-                className={!table.getCanPreviousPage() ? "opacity-50 cursor-not-allowed" : ""}
-              />
+              {canPreviousPage ? (
+                <PaginationPrevious
+                  onClick={() => table.previousPage()}
+                  className={cn(
+                    "cursor-pointer hover:bg-muted",
+                    "select-none"
+                  )}
+                >
+                  Önceki
+                </PaginationPrevious>
+              ) : (
+                <span className="opacity-50 cursor-not-allowed select-none px-4 py-2">
+                  Önceki
+                </span>
+              )}
             </PaginationItem>
             {renderPaginationItems()}
             <PaginationItem>
-              <PaginationNext
-                onClick={() => table.nextPage()}
-                aria-disabled={!table.getCanNextPage()}
-                className={!table.getCanNextPage() ? "opacity-50 cursor-not-allowed" : ""}
-              />
+              {canNextPage ? (
+                <PaginationNext
+                  onClick={() => table.nextPage()}
+                  className={cn(
+                    "cursor-pointer hover:bg-muted",
+                    "select-none"
+                  )}
+                >
+                  Sonraki
+                </PaginationNext>
+              ) : (
+                <span className="opacity-50 cursor-not-allowed select-none px-4 py-2">
+                  Sonraki
+                </span>
+              )}
             </PaginationItem>
           </PaginationContent>
         </Pagination>
