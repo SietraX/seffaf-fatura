@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { translateMonthToTurkish } from "@/utils/translateMonth"
 
 export function DataTableContainer() {
   const { billData } = useBillData()
@@ -54,6 +55,13 @@ export function DataTableContainer() {
     [filteredByProvider, selectedGBPackage]
   );
 
+  const translatedData = useMemo(() => {
+    return filteredData.map(bill => ({
+      ...bill,
+      contract_start_month_turkish: translateMonthToTurkish(bill.contract_start_month)
+    }))
+  }, [filteredData])
+
   const handleProviderChange = (provider: string | null) => {
     setSelectedProvider(provider);
     setSelectedGBPackage(null);
@@ -73,10 +81,10 @@ export function DataTableContainer() {
             }
           >
             <SelectTrigger className="w-full sm:w-[160px]" aria-label="Select GB package">
-              <SelectValue placeholder="All GB Packages" />
+              <SelectValue placeholder="Bütün GB Paketleri" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All GB Packages</SelectItem>
+            <SelectContent className="bg-white">
+              <SelectItem value="all">Bütün GB Paketleri</SelectItem>
               {gbPackages.map((gb) => (
                 <SelectItem key={gb} value={gb.toString()}>
                   {gb} GB
@@ -91,10 +99,10 @@ export function DataTableContainer() {
             }
           >
             <SelectTrigger className="w-full sm:w-[160px]" aria-label="Select provider">
-              <SelectValue placeholder="All Providers" />
+              <SelectValue placeholder="Bütün Operatörler" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Providers</SelectItem>
+            <SelectContent className="bg-white">
+              <SelectItem value="all">Bütün Operatörler</SelectItem>
               {providers.map((provider) => (
                 <SelectItem key={provider} value={provider}>
                   {provider}
@@ -106,7 +114,7 @@ export function DataTableContainer() {
       </CardHeader>
       <CardContent className="flex-grow overflow-hidden p-4">
         <div className="h-full overflow-hidden">
-          <DataTable columns={columns} data={filteredData} />
+          <DataTable columns={columns} data={translatedData} />
         </div>
       </CardContent>
     </Card>
