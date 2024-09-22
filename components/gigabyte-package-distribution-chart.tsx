@@ -92,16 +92,14 @@ export function GigabytePackageDistributionChart() {
   };
 
   return (
-    <Card className="flex flex-col">
+    <Card className="h-full flex flex-col">
       <ChartStyle id="gigabyte-package-chart" config={chartConfig} />
-      <CardHeader className="flex-row items-start space-y-0 pb-0">
-        <div className="grid gap-1">
-          <CardTitle>Gigabyte Package Distribution</CardTitle>
-          <CardDescription>Distribution of users across GB package groups</CardDescription>
-        </div>
+      <CardHeader className="flex-shrink-0">
+        <CardTitle>Gigabyte Package Distribution</CardTitle>
+        <CardDescription>Distribution of users across GB package groups</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-1 justify-center pb-0">
-        <ChartContainer id="gigabyte-package-chart" config={chartConfig} className="mx-auto aspect-square w-full max-w-[300px]">
+      <CardContent className="flex-grow">
+        <ChartContainer id="gigabyte-package-chart" config={chartConfig} className="h-full w-full">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <ChartTooltip content={<ChartTooltipContent hideLabel />} />

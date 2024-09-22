@@ -78,15 +78,15 @@ export function ProviderDistributionChart() {
   };
 
   return (
-    <Card className="h-full">
+    <Card className="h-full flex flex-col">
       <CardHeader className="flex-row items-start space-y-0 pb-2">
         <div className="grid gap-1">
           <CardTitle className="text-base">Provider Distribution</CardTitle>
           <CardDescription className="text-xs">Distribution of users across mobile providers</CardDescription>
         </div>
       </CardHeader>
-      <CardContent className="pb-2">
-        <ChartContainer id="provider-distribution-chart" config={chartConfig} className="aspect-square w-full">
+      <CardContent className="flex-grow pb-2">
+        <ChartContainer id="provider-distribution-chart" config={chartConfig} className="h-full w-full">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <ChartTooltip content={<ChartTooltipContent hideLabel />} />

@@ -9,28 +9,35 @@ import { PieChartContainer } from "@/components/pie-chart-container";
 export default function Dashboard() {
   return (
     <BillDataProvider>
-      <div className="min-h-screen p-4 md:p-8 bg-gray-50">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 auto-rows-auto">
-          <div className="md:col-span-1 h-[200px] overflow-auto">
-            <CardContainer />
+      <div className="h-screen p-4 md:p-8 bg-gray-50 overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+          {/* First column */}
+          <div className="flex flex-col space-y-4 overflow-hidden h-full">
+            <div className="h-[30vh]">
+              <PieChartContainer />
+            </div>
+            <div className="h-[55vh] overflow-auto">
+              <Suspense fallback={<div>Loading bill chart...</div>}>
+                <DataTableContainer />
+              </Suspense>
+            </div>
           </div>
-          <div className="md:col-span-1 h-[200px] overflow-auto">
-            <PieChartContainer />
-          </div>
-          <div className="md:col-span-1 md:row-span-2">
-            <Suspense fallback={<div>Loading bill chart...</div>}>
-              <DataTableContainer />              
-            </Suspense>
-          </div>
-          <div className="md:col-span-1">
-            <Suspense fallback={<div>Loading bill data...</div>}>
-              <BillChart />
-            </Suspense>
-          </div>
-          <div className="md:col-span-1">
-            <Suspense fallback={<div>Loading price action chart...</div>}>
-              <PriceActionChart />
-            </Suspense>
+
+          {/* Second column */}
+          <div className="flex flex-col space-y-4 overflow-hidden h-full">
+            <div className="h-[20vh]">
+              <CardContainer />
+            </div>
+            <div className="h-[35vh] overflow-auto">
+              <Suspense fallback={<div>Loading bill data...</div>}>
+                <BillChart />
+              </Suspense>
+            </div>
+            <div className="h-[30vh]">
+              <Suspense fallback={<div>Loading price action chart...</div>}>
+                <PriceActionChart />
+              </Suspense>
+            </div>
           </div>
         </div>
       </div>

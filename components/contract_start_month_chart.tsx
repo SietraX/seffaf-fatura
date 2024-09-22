@@ -58,13 +58,13 @@ export function ContractStartMonthChart() {
   const providers = Object.keys(chartData[0]).filter(key => key !== 'month' && key !== 'monthIndex');
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="h-full flex flex-col">
+      <CardHeader className="flex-shrink-0">
         <CardTitle>Contract Start Month Distribution</CardTitle>
         <CardDescription>Number of contracts starting each month by provider</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={400}>
+      <CardContent className="flex-grow">
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="month" />
