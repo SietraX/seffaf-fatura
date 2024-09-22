@@ -92,31 +92,14 @@ export function GigabytePackageDistributionChart() {
   };
 
   return (
-    <Card className="flex flex-col">
+    <Card className="h-full flex flex-col">
       <ChartStyle id="gigabyte-package-chart" config={chartConfig} />
-      <CardHeader className="flex-row items-start space-y-0 pb-0">
-        <div className="grid gap-1">
-          <CardTitle>Gigabyte Package Distribution</CardTitle>
-          <CardDescription>Distribution of users across GB package groups</CardDescription>
-        </div>
-        <Select value={activePackage || ''} onValueChange={setActivePackage}>
-          <SelectTrigger className="ml-auto h-7 w-[130px] rounded-lg pl-2.5">
-            <SelectValue placeholder="Select group" />
-          </SelectTrigger>
-          <SelectContent align="end" className="rounded-xl">
-            {processedData.map((item) => (
-              <SelectItem key={item.name} value={item.name} className="rounded-lg [&_span]:flex">
-                <div className="flex items-center gap-2 text-xs">
-                  <span className="flex h-3 w-3 shrink-0 rounded-sm" style={{ backgroundColor: item.fill }} />
-                  {item.name}
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <CardHeader className="flex-shrink-0">
+        <CardTitle>Gigabyte Package Distribution</CardTitle>
+        <CardDescription>Distribution of users across GB package groups</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-1 justify-center pb-0">
-        <ChartContainer id="gigabyte-package-chart" config={chartConfig} className="mx-auto aspect-square w-full max-w-[300px]">
+      <CardContent className="flex-grow">
+        <ChartContainer id="gigabyte-package-chart" config={chartConfig} className="h-full w-full">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <ChartTooltip content={<ChartTooltipContent hideLabel />} />

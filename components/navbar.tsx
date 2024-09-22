@@ -8,7 +8,7 @@ export function Navbar() {
   const { isSignedIn, user } = useUser();
 
   return (
-    <nav className="flex justify-between items-center p-4 bg-background shadow">
+    <nav className="flex justify-between items-center p-4 bg-background shadow h-[6vh]">
       <div className="flex items-center gap-2">
         <img src="/logo.png" alt="Logo" className="h-8 w-8" />
         <Link href="/" className="text-foreground text-xl font-bold">

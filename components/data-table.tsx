@@ -34,11 +34,13 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  pageSize: number;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  pageSize,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
@@ -50,19 +52,25 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: (updater) => {
       setSorting((old) => {
-        const newSorting = typeof updater === 'function' ? updater(old) : updater;
-        
+        const newSorting =
+          typeof updater === "function" ? updater(old) : updater;
+
         // If the new sorting is empty, toggle the last sorted column
         if (newSorting.length === 0 && old.length > 0) {
           const lastSort = old[0];
           return [{ ...lastSort, desc: !lastSort.desc }];
         }
-        
+
         return newSorting;
       });
     },
     state: {
       sorting,
+    },
+    initialState: {
+      pagination: {
+        pageSize: pageSize,
+      },
     },
   });
 
@@ -149,8 +157,8 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div>
-      <div className="rounded-md border">
+    <div className="flex flex-col h-full">
+      <div className="flex-grow overflow-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -218,7 +226,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="mt-auto pt-4">
         <Pagination>
           <PaginationContent className="w-[400px] justify-end">
             {" "}
