@@ -9,7 +9,7 @@ import { PieChartContainer } from "@/components/pie-chart-container";
 export default function Dashboard() {
   return (
     <BillDataProvider>
-      <div className="h-screen p-4 md:p-8 bg-gray-50 overflow-hidden">
+      <div className="p-4 md:p-8 bg-gray-50 overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
           {/* First column */}
           <div className="flex flex-col space-y-4 overflow-hidden h-full">
@@ -33,7 +33,7 @@ export default function Dashboard() {
                 <BillChart />
               </Suspense>
             </div>
-            <div className="h-[30vh]">
+            <div className="h-[35vh]">
               <Suspense fallback={<div>Loading price action chart...</div>}>
                 <PriceActionChart />
               </Suspense>

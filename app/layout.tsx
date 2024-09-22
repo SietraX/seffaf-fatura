@@ -1,14 +1,15 @@
-import { ClerkProvider } from '@clerk/nextjs'
-import './globals.css'
-import { Navbar } from '@/components/navbar'
-import { ThemeProvider } from '@/components/theme-provider'
+import { ClerkProvider } from "@clerk/nextjs";
+import "./globals.css";
+import { Navbar } from "@/components/navbar";
+import { ThemeProvider } from "@/components/theme-provider";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <ClerkProvider
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
-    >
+    <ClerkProvider signInUrl="/sign-in" signUpUrl="/sign-up">
       <html lang="en">
         <body>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
@@ -18,5 +19,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </body>
       </html>
     </ClerkProvider>
-  )
+  );
 }

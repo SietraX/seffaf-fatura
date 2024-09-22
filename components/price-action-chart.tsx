@@ -5,7 +5,6 @@ import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Legend, ResponsiveContain
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -181,20 +180,15 @@ export function PriceActionChart() {
   if (billData.length === 0) return <div>No data available</div>;
 
   return (
-    <Card className="w-full">
-      <CardHeader className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-        <div>
-          <CardTitle className="text-2xl font-bold">Price Action Chart</CardTitle>
-          <CardDescription>
-            Median price per month for {selectedGB}GB package across providers
-          </CardDescription>
-        </div>
-        <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
+    <Card className="w-full h-full flex flex-col">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 flex-shrink-0">
+        <CardTitle className="text-base">Fiyat Değişim Grafiği</CardTitle>
+        <div className="flex space-x-2">
           <Select value={selectedGB} onValueChange={setSelectedGB}>
-            <SelectTrigger className="w-[120px] cursor-pointer" aria-label="Select GB package">
+            <SelectTrigger className="w-[100px]" aria-label="Select GB package">
               <SelectValue placeholder="Select GB" />
             </SelectTrigger>
-            <SelectContent className="bg-white">
+            <SelectContent>
               {gbOptions.map((gb) => (
                 <SelectItem key={gb} value={gb}>
                   {gb} GB
@@ -203,7 +197,7 @@ export function PriceActionChart() {
             </SelectContent>
           </Select>
           <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-[160px]" aria-label="Select time range">
+            <SelectTrigger className="w-[140px]" aria-label="Select time range">
               <SelectValue placeholder="Select time range" />
             </SelectTrigger>
             <SelectContent>
@@ -216,9 +210,9 @@ export function PriceActionChart() {
           </Select>
         </div>
       </CardHeader>
-      <CardContent className="pt-6">
+      <CardContent className="flex-grow pt-0 overflow-hidden">
         {filteredData.length > 0 ? (
-          <ChartContainer config={chartConfig} className="h-[400px] w-full">
+          <ChartContainer config={chartConfig} className="h-full w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
@@ -245,7 +239,7 @@ export function PriceActionChart() {
                 <YAxis
                   tickFormatter={(value) => `₺${value.toFixed(0)}`}
                   domain={["auto", "auto"]}
-                  label={{ value: "Price (₺)", angle: -90, position: "insideLeft" }}
+                  label={{ value: "Fiyat (₺)", angle: -90, position: "insideLeft" }}
                 />
                 <ChartTooltip
                   content={
@@ -277,7 +271,7 @@ export function PriceActionChart() {
             </ResponsiveContainer>
           </ChartContainer>
         ) : (
-          <div className="flex h-[400px] items-center justify-center text-muted-foreground">
+          <div className="flex h-full items-center justify-center text-muted-foreground">
             No data available for the selected filters
           </div>
         )}
