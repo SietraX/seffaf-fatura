@@ -120,8 +120,8 @@ export default function LandingPage() {
               <Image
                 src="/placeholder.svg"
                 alt="Dashboard Screenshot"
-                layout="fill"
-                objectFit="cover"
+                style={{ objectFit: 'cover' }}
+                fill
               />
               <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                 <span className="text-2xl font-bold text-white">DASHBOARD SCREENSHOT</span>
