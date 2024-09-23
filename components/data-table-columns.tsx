@@ -51,6 +51,15 @@ export const columns: ColumnDef<BillData>[] = [
   {
     accessorKey: "contract_start_month_turkish",
     header: "Başlangıç Ayı",
+    sortingFn: (rowA, rowB, columnId) => {
+      // Use the numeric contract_start_month for sorting
+      const monthA = rowA.original.contract_start_month as number;
+      const monthB = rowB.original.contract_start_month as number;
+      return monthA - monthB;
+    },
+    cell: ({ row }) => {
+      return row.getValue("contract_start_month_turkish") as string;
+    },
   },
   {
     accessorKey: "updated_at",
@@ -64,11 +73,3 @@ export const columns: ColumnDef<BillData>[] = [
     },
   },
 ]
-
-// You may need to update your BillData type to include the new field:
-export interface BillData {
-  // ... other fields ...
-  contract_start_month: number;
-  contract_start_month_turkish: string;
-  // ... other fields ...
-}

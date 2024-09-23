@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -9,8 +9,9 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   SortingState,
-} from "@tanstack/react-table"
-import { ArrowUp, ArrowDown } from "lucide-react"
+  PaginationState,
+} from "@tanstack/react-table";
+import { ArrowUp, ArrowDown } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -18,7 +19,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
   Pagination,
   PaginationContent,
@@ -27,7 +28,8 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
+} from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 
@@ -41,21 +43,37 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [pageSize, setPageSize] = useState(5)
+  const [{ pageIndex, pageSize }, setPagination] =
+    React.useState<PaginationState>({
+      pageIndex: 0,
+      pageSize: 5,
+    });
+
+  const pagination = React.useMemo(
+    () => ({
+      pageIndex,
+      pageSize,
+    }),
+    [pageIndex, pageSize]
+  );
 
   useEffect(() => {
     const handleResize = () => {
-      const height = window.innerHeight
-      if (height < 600) setPageSize(4)
-      else if (height < 800) setPageSize(5)
-      else if (height < 1000) setPageSize(7)
-      else setPageSize(10)
-    }
+      const height = window.innerHeight;
+      let newPageSize;
+      if (height < 600) newPageSize = 4;
+      else if (height < 800) newPageSize = 5;
+      else if (height < 1000) newPageSize = 7;
+      else newPageSize = 10;
 
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+      setPagination((prev) => ({ ...prev, pageSize: newPageSize }));
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const table = useReactTable({
     data,
     columns,
@@ -76,17 +94,10 @@ export function DataTable<TData, TValue>({
         return newSorting;
       });
     },
+    onPaginationChange: setPagination,
     state: {
       sorting,
-      pagination: {
-        pageSize,
-        pageIndex: 0,
-      },
-    },
-    initialState: {
-      pagination: {
-        pageSize: pageSize,
-      },
+      pagination,
     },
   });
 
@@ -172,6 +183,9 @@ export function DataTable<TData, TValue>({
     return items;
   };
 
+  const canPreviousPage = table.getCanPreviousPage();
+  const canNextPage = table.getCanNextPage();
+
   return (
     <div className="space-y-4">
       <div className="rounded-md border overflow-hidden">
@@ -181,7 +195,10 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="text-xs sm:text-sm p-1 sm:p-2">
+                    <TableHead
+                      key={header.id}
+                      className="text-xs sm:text-sm p-1 sm:p-2"
+                    >
                       {header.isPlaceholder ? null : (
                         <div
                           {...{
@@ -220,7 +237,10 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-xs sm:text-sm p-1 sm:p-2">
+                    <TableCell
+                      key={cell.id}
+                      className="text-xs sm:text-sm p-1 sm:p-2"
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -246,19 +266,33 @@ export function DataTable<TData, TValue>({
         <Pagination className="pb-6">
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious
-                onClick={() => table.previousPage()}
-                aria-disabled={!table.getCanPreviousPage()}
-                className={!table.getCanPreviousPage() ? "opacity-50 cursor-not-allowed" : ""}
-              />
+              {canPreviousPage ? (
+                <PaginationPrevious
+                  onClick={() => table.previousPage()}
+                  className={cn("cursor-pointer hover:bg-muted", "select-none")}
+                >
+                  Önceki
+                </PaginationPrevious>
+              ) : (
+                <span className="opacity-50 cursor-not-allowed select-none px-4 py-2">
+                  Önceki
+                </span>
+              )}
             </PaginationItem>
             {renderPaginationItems()}
             <PaginationItem>
-              <PaginationNext
-                onClick={() => table.nextPage()}
-                aria-disabled={!table.getCanNextPage()}
-                className={!table.getCanNextPage() ? "opacity-50 cursor-not-allowed" : ""}
-              />
+              {canNextPage ? (
+                <PaginationNext
+                  onClick={() => table.nextPage()}
+                  className={cn("cursor-pointer hover:bg-muted", "select-none")}
+                >
+                  Sonraki
+                </PaginationNext>
+              ) : (
+                <span className="opacity-50 cursor-not-allowed select-none px-4 py-2">
+                  Sonraki
+                </span>
+              )}
             </PaginationItem>
           </PaginationContent>
         </Pagination>
