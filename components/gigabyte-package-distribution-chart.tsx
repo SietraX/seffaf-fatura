@@ -4,14 +4,12 @@ import React, { useMemo, useState, useEffect } from 'react'
 import { PieChart, Pie, Sector, ResponsiveContainer, Label } from 'recharts'
 import { useBillData } from '@/contexts/BillDataContext'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ChartConfig, ChartContainer, ChartStyle, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 
 const COLORS = ['#00C49F', '#FFBB28', '#0088FE', '#FF8042', '#FF6663'];
 
 const chartConfig: ChartConfig = {
   visitors: { label: "Users" },
-  // Add more config as needed
 };
 
 const GB_GROUPS = [

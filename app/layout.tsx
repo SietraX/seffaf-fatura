@@ -10,11 +10,11 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider signInUrl="/sign-in" signUpUrl="/sign-up">
-      <html lang="en">
-        <body>
+      <html lang="en" className="h-full">
+        <body className="flex flex-col h-full">
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <Navbar />
-            {children}
+            <main className="flex-grow overflow-auto h-[calc(100vh-6vh)]">{children}</main>
           </ThemeProvider>
         </body>
       </html>

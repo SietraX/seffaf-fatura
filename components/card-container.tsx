@@ -96,7 +96,7 @@ export function CardContainer() {
     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 h-full">
       <CustomCard
         title="Toplam Kullanıcı"
-        content={<div className="text-xl sm:text-2xl font-bold">{stats.total}</div>}
+        content={<div className="text-lg sm:text-xl md:text-2xl font-bold">{stats.total}</div>}
         footer={
           <div className="text-xs text-muted-foreground">
             kişi katılım gösterdi
@@ -105,7 +105,7 @@ export function CardContainer() {
       />
       <CustomCard
         title="Aylık"
-        content={<div className="text-xl sm:text-2xl font-bold">{stats.last30Days}</div>}
+        content={<div className="text-lg sm:text-xl md:text-2xl font-bold">{stats.last30Days}</div>}
         footer={
           <div
             className={`text-xs ${
@@ -120,7 +120,7 @@ export function CardContainer() {
       />
       <CustomCard
         title="Günlük"
-        content={<div className="text-xl sm:text-2xl font-bold">{stats.last24Hours}</div>}
+        content={<div className="text-lg sm:text-xl md:text-2xl font-bold">{stats.last24Hours}</div>}
         footer={
           <div
             className={`text-xs ${
@@ -136,7 +136,7 @@ export function CardContainer() {
       <CustomCard
         title="En Çok Tercih Edilen GB"
         content={
-          <div className="text-xl sm:text-2xl font-bold">
+          <div className="text-lg sm:text-xl md:text-2xl font-bold">
             {stats.mostSelectedGB.gbSize || "N/A"} GB
           </div>
         }

@@ -45,14 +45,14 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white text-gray-800 p-8 flex items-center justify-center">
+    <div className="h-full bg-gradient-to-br from-blue-50 to-white text-gray-800 p-4 sm:p-8 flex items-center justify-center overflow-auto">
       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-8">
+        <div className="space-y-4 sm:space-y-8">
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="text-2xl font-semibold"
+            className="text-xl sm:text-2xl font-semibold"
           >
             {text1}
           </motion.p>
@@ -60,7 +60,7 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: isComplete1 ? 1 : 0 }}
             transition={{ duration: 0.5 }}
-            className="text-2xl font-semibold"
+            className="text-xl sm:text-2xl font-semibold"
           >
             {text2}
           </motion.p>
@@ -68,20 +68,20 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: isComplete2 ? 1 : 0 }}
             transition={{ duration: 0.5 }}
-            className="text-5xl md:text-6xl font-bold leading-tight"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
           >
             {headline}
           </motion.h1>
         </div>
         <div className="relative h-full flex flex-col justify-between">
-          <div className="space-y-8">
+          <div className="space-y-4 sm:space-y-8">
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: isComplete3 ? 1 : 0, x: isComplete3 ? 0 : 50 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <div className="flex items-center space-x-4">
-                <svg width="150" height="75" viewBox="0 0 150 75" className="text-blue-500">
+              <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <svg width="100" height="50" viewBox="0 0 150 75" className="text-blue-500">
                   <path d="M0,37.5 Q75,0 150,37.5" fill="none" stroke="currentColor" strokeWidth="3" />
                   <polygon points="142.5,33 150,37.5 142.5,42" fill="currentColor" />
                 </svg>
@@ -96,8 +96,8 @@ export default function LandingPage() {
               animate={{ opacity: isComplete3 ? 1 : 0, x: isComplete3 ? 0 : 50 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              <div className="flex items-center space-x-4">
-                <svg width="150" height="75" viewBox="0 0 150 75" className="text-green-500">
+              <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <svg width="100" height="50" viewBox="0 0 150 75" className="text-green-500">
                   <path d="M0,37.5 Q75,75 150,37.5" fill="none" stroke="currentColor" strokeWidth="3" />
                   <polygon points="142.5,33 150,37.5 142.5,42" fill="currentColor" />
                 </svg>
@@ -124,7 +124,7 @@ export default function LandingPage() {
                 fill
               />
               <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">DASHBOARD SCREENSHOT</span>
+                <span className="text-xl sm:text-2xl font-bold text-white">DASHBOARD SCREENSHOT</span>
               </div>
             </div>
           </motion.div>
