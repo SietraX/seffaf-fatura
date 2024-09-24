@@ -180,7 +180,7 @@ export function PriceActionChart() {
   if (billData.length === 0) return <div>No data available</div>;
 
   return (
-    <Card className="w-full h-full flex flex-col">
+    <Card className="h-auto flex flex-col">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 flex-shrink-0">
         <CardTitle className="text-base">Fiyat Değişim Grafiği</CardTitle>
         <div className="flex space-x-2">
@@ -214,7 +214,10 @@ export function PriceActionChart() {
         {filteredData.length > 0 ? (
           <ChartContainer config={chartConfig} className="h-full w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <AreaChart
+                data={filteredData}
+                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+              >
                 <defs>
                   {Array.from(new Set(billData.map((bill) => bill.provider_name))).map((provider, index) => (
                     <linearGradient key={provider} id={`fill${provider}`} x1="0" y1="0" x2="0" y2="1">
@@ -230,8 +233,10 @@ export function PriceActionChart() {
                   axisLine={false}
                   tickMargin={8}
                   tickFormatter={(value) => {
-                    const [year, month] = value.split("-")
-                    return `${new Date(parseInt(year), parseInt(month) - 1).toLocaleString("default", { month: "short" })} ${year}`
+                    const [year, month] = value.split("-");
+                    return `${new Date(parseInt(year), parseInt(month) - 1).toLocaleString("default", {
+                      month: "short",
+                    })} ${year}`;
                   }}
                   interval="preserveEnd"
                   minTickGap={30}

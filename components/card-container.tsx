@@ -93,7 +93,7 @@ export function CardContainer() {
         );
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 h-full">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 h-auto">
       <CustomCard
         title="Toplam Kullanıcı"
         content={<div className="text-lg sm:text-xl md:text-2xl font-bold">{stats.total}</div>}

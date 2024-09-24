@@ -82,7 +82,7 @@ export function ProviderDistributionChart() {
         <CardTitle className="text-sm sm:text-base">Kullanıcı Dağılımı</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow pb-2">
-        <div className="h-[200px] sm:h-[250px] md:h-[300px] lg:h-full"> {/* Responsive height */}
+        <div className="h-full">
           <ChartContainer id="provider-distribution-chart" config={chartConfig} className="h-full w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>

@@ -7,7 +7,6 @@ import { DataTable } from "@/components/data-table"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -82,7 +81,7 @@ export function DataTableContainer() {
 
   return (
     <div>    
-      <Card className="w-full h-full">
+      <Card className="w-full h-full flex flex-col">
         <CardHeader className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 flex-shrink-0 p-4">
           <div>
             <CardTitle className="text-xl font-bold">Fatura Detayları</CardTitle>
@@ -126,7 +125,7 @@ export function DataTableContainer() {
             </Select>
           </div>
         </CardHeader>
-        <CardContent className="flex-grow overflow-hidden p-4">
+        <CardContent className="flex-grow overflow-auto p-4">
           <div className="h-full">
             <DataTable columns={columns} data={translatedData} />
           </div>

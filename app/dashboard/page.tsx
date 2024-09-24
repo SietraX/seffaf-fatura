@@ -9,37 +9,37 @@ import { PieChartContainer } from "@/components/pie-chart-container";
 export default function Dashboard() {
   return (
     <BillDataProvider>
-      <div className="h-[calc(100vh-6vh)] md:overflow-hidden bg-gray-50">
-        <div className="h-full w-full max-w-[95%] sm:max-w-[90%] lg:max-w-[80%] mx-auto p-2 sm:p-4">
-          <div className="h-full grid grid-cols-1 md:grid-cols-2 gap-4 md:overflow-hidden">
-            {/* First column */}
-            <div className="flex flex-col space-y-4 md:h-full md:overflow-auto md:pr-2">
-              <div className="h-auto md:h-1/4 min-h-[200px]">
+      <div className="h-[calc(100vh-6vh)] bg-gray-50 w-full md:w-[80vw] mx-auto">
+        <div className="h-full w-full p-2 sm:p-4">
+          <div className="flex flex-col md:flex-row h-full">
+            {/* First Column */}
+            <div className="flex flex-col w-full md:w-1/2 space-y-4">
+              <div className="flex-1 md:flex-none md:h-[20%]">
                 <Suspense fallback={<div>Loading card data...</div>}>
                   <CardContainer />
                 </Suspense>
               </div>
-              <div className="h-auto md:h-1/3 min-h-[250px]">
+              <div className="flex-1 md:flex-none md:h-[40%]">
                 <Suspense fallback={<div>Loading bill data...</div>}>
                   <BillChart />
                 </Suspense>
               </div>
-              <div className="h-auto md:h-5/12 min-h-[300px]">
+              <div className="flex-1 md:flex-none md:h-[80%]">
                 <Suspense fallback={<div>Loading price action chart...</div>}>
                   <PriceActionChart />
                 </Suspense>
               </div>
             </div>
 
-            {/* Second column */}
-            <div className="flex flex-col space-y-4 md:h-full md:overflow-auto md:pl-2">
-              <div className="h-auto md:h-1/2 min-h-[400px]">
+            {/* Second Column */}
+            <div className="flex flex-col w-full md:w-1/2 space-y-4">
+              <div className="flex-1 md:flex-none md:h-[40%]">
                 <Suspense fallback={<div>Loading pie chart...</div>}>
                   <PieChartContainer />
                 </Suspense>
               </div>
-              <div className="h-auto md:h-1/2 min-h-[400px]">
-                <Suspense fallback={<div>Loading bill chart...</div>}>
+              <div className="flex-1 md:flex-none md:h-[60%]">
+                <Suspense fallback={<div>Loading data table...</div>}>
                   <DataTableContainer />
                 </Suspense>
               </div>
