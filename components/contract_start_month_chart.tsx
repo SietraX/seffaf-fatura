@@ -75,30 +75,31 @@ export function ContractStartMonthChart() {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="flex-shrink-0 py-2">
-        <CardTitle className="text-sm sm:text-base pt-3">Sözleşme Başlangıç Tarihi</CardTitle>
+        <CardTitle className="text-sm sm:text-base">Sözleşme Başlangıç Tarihi</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 10, right: 0, left: -40, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" tick={{ fontSize: 8 }} />
-            <YAxis tick={{ fontSize: 8 }} />
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
-              wrapperStyle={{ zIndex: 100 }}
-              position={{ y: -50 }}
-            />
-            {providers.map((provider, index) => (
-              <Bar 
-                key={provider} 
-                dataKey={provider} 
-                stackId="a" 
-                fill={COLORS[index % COLORS.length]}
+        <div className="h-[200px] sm:h-[250px] md:h-[300px] lg:h-full"> {/* Responsive height */}
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ top: 10, right: 0, left: -40, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" tick={{ fontSize: 8 }} />
+              <YAxis tick={{ fontSize: 8 }} />
+              <Tooltip
+                content={<CustomTooltip />}
+                cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
+                wrapperStyle={{ zIndex: 100 }}
               />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
+              {providers.map((provider, index) => (
+                <Bar 
+                  key={provider} 
+                  dataKey={provider} 
+                  stackId="a" 
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   )

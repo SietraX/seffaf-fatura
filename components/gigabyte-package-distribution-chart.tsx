@@ -3,7 +3,7 @@
 import React, { useMemo, useState, useEffect } from 'react'
 import { PieChart, Pie, Sector, ResponsiveContainer, Label } from 'recharts'
 import { useBillData } from '@/contexts/BillDataContext'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ChartConfig, ChartContainer, ChartStyle, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 
@@ -95,63 +95,65 @@ export function GigabytePackageDistributionChart() {
     <Card className="h-full flex flex-col">
       <ChartStyle id="gigabyte-package-chart" config={chartConfig} />
       <CardHeader className="flex-shrink-0">
-        <CardTitle>GB Tercihleri</CardTitle>
+        <CardTitle className="text-sm sm:text-base">GB Tercihleri</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow">
-        <ChartContainer id="gigabyte-package-chart" config={chartConfig} className="h-full w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-              <Pie
-                data={processedData}
-                cx="50%"
-                cy="50%"
-                innerRadius={45}
-                outerRadius={70}
-                dataKey="value"
-                activeIndex={activeIndex}
-                activeShape={renderActiveShape}
-                onMouseEnter={(_, index) => {
-                  if (processedData[index]) {
-                    setActivePackage(processedData[index].name);
-                  }
-                }}
-              >
-                <Label
-                  content={({ viewBox }) => {
-                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                      const activeData = processedData[activeIndex] || processedData[0] || { value: 0, name: 'N/A' };
-                      return (
-                        <text
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                        >
-                          <tspan
-                            x={viewBox.cx}
-                            y={(viewBox.cy || 0) + 0}
-                            className="fill-foreground text-2xl font-bold"
-                          >
-                            {activeData.name.split(" ")[0]}
-                          </tspan>
-                          <tspan
-                            x={viewBox.cx}
-                            y={(viewBox.cy || 0) + 20}
-                            className="fill-muted-foreground text-sm"
-                          >
-                            GB
-                          </tspan>
-                        </text>
-                      )
+        <div className="h-[200px] sm:h-[250px] md:h-[300px] lg:h-full"> {/* Responsive height */}
+          <ChartContainer id="gigabyte-package-chart" config={chartConfig} className="h-full w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                <Pie
+                  data={processedData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius="40%"
+                  outerRadius="70%"
+                  dataKey="value"
+                  activeIndex={activeIndex}
+                  activeShape={renderActiveShape}
+                  onMouseEnter={(_, index) => {
+                    if (processedData[index]) {
+                      setActivePackage(processedData[index].name);
                     }
-                    return null;
                   }}
-                />
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartContainer>
+                >
+                  <Label
+                    content={({ viewBox }) => {
+                      if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                        const activeData = processedData[activeIndex] || processedData[0] || { value: 0, name: 'N/A' };
+                        return (
+                          <text
+                            x={viewBox.cx}
+                            y={viewBox.cy}
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                          >
+                            <tspan
+                              x={viewBox.cx}
+                              y={(viewBox.cy || 0) - 10}
+                              className="fill-foreground text-lg sm:text-xl md:text-2xl font-bold"
+                            >
+                              {activeData.name.split(" ")[0]}
+                            </tspan>
+                            <tspan
+                              x={viewBox.cx}
+                              y={(viewBox.cy || 0) + 15}
+                              className="fill-muted-foreground text-xs sm:text-sm"
+                            >
+                              GB
+                            </tspan>
+                          </text>
+                        )
+                      }
+                      return null;
+                    }}
+                  />
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </div>
       </CardContent>
     </Card>
   )

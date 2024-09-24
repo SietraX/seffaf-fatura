@@ -3,9 +3,8 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
 import { useBillData } from '@/contexts/BillDataContext';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ChartConfig, ChartContainer, ChartStyle, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 
 const COLORS = ['#00C49F', '#FFBB28', '#0088FE', '#FF8042', '#FF6663'];
 
@@ -80,59 +79,59 @@ export function ProviderDistributionChart() {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="flex-row items-start space-y-0 pb-2">
-        <div className="grid gap-1">
-          <CardTitle className="text-base">Kullanıcı Dağılımı</CardTitle>
-        </div>
+        <CardTitle className="text-sm sm:text-base">Kullanıcı Dağılımı</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow pb-2">
-        <ChartContainer id="provider-distribution-chart" config={chartConfig} className="h-full w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-              <Pie
-                data={processedData}
-                cx="50%"
-                cy="50%"
-                innerRadius={45}
-                outerRadius={70}
-                dataKey="value"
-                activeIndex={activeIndex}
-                activeShape={renderActiveShape}
-                onMouseEnter={(_, index) => {
-                  if (processedData[index]) {
-                    setActiveProvider(processedData[index].name);
-                  }
-                }}
-              >
-                {processedData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.fill} />
-                ))}
-              </Pie>
-              {/* Custom label */}
-              <text
-                x="50%"
-                y="50%"
-                textAnchor="middle"
-                dominantBaseline="middle"
-              >
-                <tspan
+        <div className="h-[200px] sm:h-[250px] md:h-[300px] lg:h-full"> {/* Responsive height */}
+          <ChartContainer id="provider-distribution-chart" config={chartConfig} className="h-full w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                <Pie
+                  data={processedData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius="40%"
+                  outerRadius="70%"
+                  dataKey="value"
+                  activeIndex={activeIndex}
+                  activeShape={renderActiveShape}
+                  onMouseEnter={(_, index) => {
+                    if (processedData[index]) {
+                      setActiveProvider(processedData[index].name);
+                    }
+                  }}
+                >
+                  {processedData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </Pie>
+                {/* Custom label */}
+                <text
                   x="50%"
                   y="50%"
-                  className="fill-foreground text-3xl font-bold"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
                 >
-                  {processedData[activeIndex]?.value || 0}
-                </tspan>
-                <tspan
-                  x="50%"
-                  dy="24"
-                  className="fill-muted-foreground"
-                >
-                  Kullanıcı
-                </tspan>
-              </text>
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartContainer>
+                  <tspan
+                    x="50%"
+                    y="50%"
+                    className="fill-foreground text-xl sm:text-2xl md:text-3xl font-bold"
+                  >
+                    {processedData[activeIndex]?.value || 0}
+                  </tspan>
+                  <tspan
+                    x="50%"
+                    dy="20"
+                    className="fill-muted-foreground text-xs sm:text-sm"
+                  >
+                    Kullanıcı
+                  </tspan>
+                </text>
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </div>
       </CardContent>
     </Card>
   );
