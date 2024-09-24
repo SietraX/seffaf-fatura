@@ -14,7 +14,7 @@ export default function RootLayout({
         <body className="flex flex-col h-full">
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <Navbar />
-            <main className="flex-grow overflow-auto h-[calc(100vh-6vh)]">{children}</main>
+            <main className="flex-grow">{children}</main>
           </ThemeProvider>
         </body>
       </html>
