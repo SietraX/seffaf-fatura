@@ -19,12 +19,12 @@ export default function Dashboard() {
                   <CardContainer />
                 </Suspense>
               </div>
-              <div className="flex-1 md:flex-none md:h-[40%]">
+              <div className="flex-1 md:flex-none md:h-[30%]">
                 <Suspense fallback={<div>Loading bill data...</div>}>
                   <BillChart />
                 </Suspense>
               </div>
-              <div className="flex-1 md:flex-none md:h-[80%]">
+              <div className="flex-1 md:flex-none md:h-[30%]">
                 <Suspense fallback={<div>Loading price action chart...</div>}>
                   <PriceActionChart />
                 </Suspense>
