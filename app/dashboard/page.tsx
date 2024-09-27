@@ -13,7 +13,7 @@ export default function Dashboard() {
         <div className="relative p-2 sm:p-4">
           <div className="flex flex-col md:flex-row h-full">
             {/* First Column */}
-            <div className="flex flex-col w-full md:w-1/2 space-y-4">
+            <div className="flex flex-col w-full md:w-1/2 space-y-4 w-">
               <div className="flex-1 md:flex-none min-h-fit">
                 <Suspense fallback={<div>Loading card data...</div>}>
                   <CardContainer />
@@ -30,7 +30,6 @@ export default function Dashboard() {
                 </Suspense>
               </div>
             </div>
-
             {/* Second Column */}
             <div className="flex flex-col w-full md:w-1/2 space-y-4">
               <div className="flex-1 md:flex-none min-h-fit">

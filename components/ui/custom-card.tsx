@@ -13,10 +13,10 @@ export function CustomCard({ title, content, footer }: CustomCardProps) {
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow flex items-center justify-center">
+      <CardContent className="flex-grow flex items-center justify-center pt-4">
         {content}
       </CardContent>
-      <CardFooter>{footer}</CardFooter>
+      <CardFooter className="shrink-0 pt-6">{footer}</CardFooter>
     </Card>
   );
 }

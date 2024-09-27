@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo, useState, useEffect } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Sector, Label } from 'recharts';
 import { useBillData } from '@/contexts/BillDataContext';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
@@ -47,8 +47,6 @@ export function ProviderDistributionChart() {
   if (isLoading) return <div>Loading provider distribution...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
   if (!processedData.length) return <div>No provider distribution data available.</div>;
-
-  const total = processedData.reduce((sum, item) => sum + item.value, 0);
 
   const renderActiveShape = (props: any) => {
     const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
@@ -105,29 +103,38 @@ export function ProviderDistributionChart() {
                   {processedData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.fill} />
                   ))}
+                  <Label
+                    content={({ viewBox }) => {
+                      if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                        const activeData = processedData[activeIndex] || { value: 0, name: 'N/A' };
+                        return (
+                          <text
+                            x={viewBox.cx}
+                            y={viewBox.cy}
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                          >
+                            <tspan
+                              x={viewBox.cx}
+                              y={(viewBox.cy || 0) - 5}
+                              className="fill-foreground text-lg sm:text-xl md:text-2xl font-bold"
+                            >
+                              {activeData.value}
+                            </tspan>
+                            <tspan
+                              x={viewBox.cx}
+                              y={(viewBox.cy || 0) + 15}
+                              className="fill-muted-foreground text-xs sm:text-sm"
+                            >
+                              Kullanıcı
+                            </tspan>
+                          </text>
+                        )
+                      }
+                      return null;
+                    }}
+                  />
                 </Pie>
-                {/* Custom label */}
-                <text
-                  x="50%"
-                  y="50%"
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                >
-                  <tspan
-                    x="50%"
-                    y="48%"
-                    className="fill-foreground text-lg sm:text-xl md:text-2xl font-bold"
-                  >
-                    {processedData[activeIndex]?.value || 0}
-                  </tspan>
-                  <tspan
-                    x="50%"
-                    dy="20"
-                    className="fill-muted-foreground text-xs sm:text-sm"
-                  >
-                    Kullanıcı
-                  </tspan>
-                </text>
               </PieChart>
             </ResponsiveContainer>
           </ChartContainer>

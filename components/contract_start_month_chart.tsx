@@ -77,7 +77,7 @@ export function ContractStartMonthChart() {
       <CardHeader className="flex-shrink-0 py-2">
         <CardTitle className="text-sm sm:text-base">Sözleşme Başlangıç Tarihi</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow">
+      <CardContent className="flex-grow pr-2 pl-2">
         <div className="h-[200px] sm:h-[250px] md:h-[300px] lg:h-[200px]"> {/* Responsive height */}
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 10, right: 0, left: -40, bottom: 0 }}>
