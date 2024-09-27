@@ -66,7 +66,7 @@ export default function BillChart() {
   }
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col pr-12 pl-6 pb-4">
       <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 pb-2">
         <CardTitle className="text-base">Ortalama Tarife Ücretleri</CardTitle>
         <Select value={selectedGB.toString()} onValueChange={(value) => setSelectedGB(Number(value))}>
@@ -82,7 +82,7 @@ export default function BillChart() {
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent className="pt-0 flex-grow">
+      <CardContent className="flex-grow pt-0 overflow-hidden max-h-[30vh] pr-12 pl-6 pb-4">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={processedData}

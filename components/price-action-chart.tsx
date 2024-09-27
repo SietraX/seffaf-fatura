@@ -180,7 +180,7 @@ export function PriceActionChart() {
   if (billData.length === 0) return <div>No data available</div>;
 
   return (
-    <Card className="h-auto flex flex-col">
+    <Card className="h-full flex flex-col">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 flex-shrink-0">
         <CardTitle className="text-base">Fiyat Değişim Grafiği</CardTitle>
         <div className="flex space-x-2">
@@ -210,7 +210,7 @@ export function PriceActionChart() {
           </Select>
         </div>
       </CardHeader>
-      <CardContent className="flex-grow pt-0 overflow-hidden">
+      <CardContent className="pt-0 overflow-hidden max-h-[30vh] pr-12 pl-6 pb-4">
         {filteredData.length > 0 ? (
           <ChartContainer config={chartConfig} className="h-full w-full">
             <ResponsiveContainer width="100%" height="100%">

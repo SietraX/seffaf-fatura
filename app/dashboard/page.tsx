@@ -11,7 +11,7 @@ export default function Dashboard() {
     <BillDataProvider>
       <div className="bg-gray-50 w-full md:w-[90vw] mx-auto">
         <div className="relative p-2 sm:p-4">
-          <div className="flex flex-col md:flex-row h-full">
+          <div className="flex flex-col md:flex-row h-full gap-4">
             {/* First Column */}
             <div className="flex flex-col w-full md:w-1/2 space-y-4 w-">
               <div className="flex-1 md:flex-none min-h-fit">
