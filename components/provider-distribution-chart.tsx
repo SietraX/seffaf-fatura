@@ -91,8 +91,8 @@ export function ProviderDistributionChart() {
                   data={processedData}
                   cx="50%"
                   cy="50%"
-                  innerRadius="40%"
-                  outerRadius="70%"
+                  innerRadius="50%"
+                  outerRadius="80%"
                   dataKey="value"
                   activeIndex={activeIndex}
                   activeShape={renderActiveShape}
@@ -115,8 +115,8 @@ export function ProviderDistributionChart() {
                 >
                   <tspan
                     x="50%"
-                    y="50%"
-                    className="fill-foreground text-xl sm:text-2xl md:text-3xl font-bold"
+                    y="48%"
+                    className="fill-foreground text-lg sm:text-xl md:text-2xl font-bold"
                   >
                     {processedData[activeIndex]?.value || 0}
                   </tspan>

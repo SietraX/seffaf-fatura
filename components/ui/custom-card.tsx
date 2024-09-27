@@ -1,18 +1,22 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface CustomCardProps {
   title: string;
-  children: React.ReactNode;
+  content: React.ReactNode;
+  footer: React.ReactNode;
 }
 
-export function CustomCard({ title, children }: CustomCardProps) {
+export function CustomCard({ title, content, footer }: CustomCardProps) {
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader className="flex-shrink-0">
+    <Card className="flex flex-col h-full">
+      <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow">{children}</CardContent>
+      <CardContent className="flex-grow flex items-center justify-center">
+        {content}
+      </CardContent>
+      <CardFooter>{footer}</CardFooter>
     </Card>
   );
 }

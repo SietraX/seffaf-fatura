@@ -9,22 +9,22 @@ import { PieChartContainer } from "@/components/pie-chart-container";
 export default function Dashboard() {
   return (
     <BillDataProvider>
-      <div className="h-[calc(100vh-6vh)] bg-gray-50 w-full md:w-[80vw] mx-auto">
-        <div className="h-full w-full p-2 sm:p-4">
+      <div className="bg-gray-50 w-full md:w-[90vw] mx-auto">
+        <div className="relative p-2 sm:p-4">
           <div className="flex flex-col md:flex-row h-full">
             {/* First Column */}
             <div className="flex flex-col w-full md:w-1/2 space-y-4">
-              <div className="flex-1 md:flex-none md:h-[20%]">
+              <div className="flex-1 md:flex-none min-h-fit">
                 <Suspense fallback={<div>Loading card data...</div>}>
                   <CardContainer />
                 </Suspense>
               </div>
-              <div className="flex-1 md:flex-none md:h-[30%]">
+              <div className="flex-1 md:flex-none min-h-fit h-[40vh]">
                 <Suspense fallback={<div>Loading bill data...</div>}>
                   <BillChart />
                 </Suspense>
               </div>
-              <div className="flex-1 md:flex-none md:h-[30%]">
+              <div className="flex-1 md:flex-none min-h-fit">
                 <Suspense fallback={<div>Loading price action chart...</div>}>
                   <PriceActionChart />
                 </Suspense>
@@ -33,7 +33,7 @@ export default function Dashboard() {
 
             {/* Second Column */}
             <div className="flex flex-col w-full md:w-1/2 space-y-4">
-              <div className="flex-1 md:flex-none md:h-[40%]">
+              <div className="flex-1 md:flex-none min-h-fit">
                 <Suspense fallback={<div>Loading pie chart...</div>}>
                   <PieChartContainer />
                 </Suspense>

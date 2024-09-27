@@ -65,7 +65,7 @@ export function CardContainer() {
 
   if (isLoading)
     return (
-      <div className="h-full flex items-center justify-center">Loading...</div>
+      <div className="h-full flex items-center justify-center">Loading card container...</div>
     );
   if (error)
     return (
@@ -93,7 +93,7 @@ export function CardContainer() {
         );
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 h-full">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <CustomCard
         title="Toplam Kullanıcı"
         content={<div className="text-lg sm:text-xl md:text-2xl font-bold">{stats.total}</div>}

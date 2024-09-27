@@ -105,8 +105,8 @@ export function GigabytePackageDistributionChart() {
                   data={processedData}
                   cx="50%"
                   cy="50%"
-                  innerRadius="40%"
-                  outerRadius="70%"
+                  innerRadius="50%"
+                  outerRadius="80%"
                   dataKey="value"
                   activeIndex={activeIndex}
                   activeShape={renderActiveShape}
@@ -129,7 +129,7 @@ export function GigabytePackageDistributionChart() {
                           >
                             <tspan
                               x={viewBox.cx}
-                              y={(viewBox.cy || 0) - 10}
+                              y={(viewBox.cy || 0) - 5}
                               className="fill-foreground text-lg sm:text-xl md:text-2xl font-bold"
                             >
                               {activeData.name.split(" ")[0]}
