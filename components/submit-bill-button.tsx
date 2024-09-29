@@ -13,7 +13,9 @@ export function SubmitBillButton() {
 
   if (!isSignedIn) {
     return (
-      <Button onClick={() => window.location.href = '/sign-in'}>
+      <Button 
+      className="bg-blue-500 text-white px-6 py-6 rounded-full text-lg font-semibold hover:bg-blue-600 transition-colors"
+      onClick={() => window.location.href = '/sign-in'}>
         Submit Your Bill
       </Button>
     )

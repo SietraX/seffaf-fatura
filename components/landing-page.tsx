@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { SubmitBillContainer } from './submit-bill-container'
+import { SubmitBillButton } from './submit-bill-button'
 
 const useTypewriter = (text: string, speed: number = 50, startDelay: number = 0) => {
   const [displayedText, setDisplayedText] = useState('')
@@ -85,10 +85,7 @@ export default function LandingPage() {
                   <path d="M0,37.5 Q75,0 150,37.5" fill="none" stroke="currentColor" strokeWidth="3" />
                   <polygon points="142.5,33 150,37.5 142.5,42" fill="currentColor" />
                 </svg>
-                <SubmitBillContainer />
-                <button className="bg-blue-500 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-blue-600 transition-colors">
-                  Share your bill
-                </button>
+                <SubmitBillButton />
               </div>
             </motion.div>
             <motion.div

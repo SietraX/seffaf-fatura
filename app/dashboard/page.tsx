@@ -9,36 +9,36 @@ import { PieChartContainer } from "@/components/pie-chart-container";
 export default function Dashboard() {
   return (
     <BillDataProvider>
-      <div className="bg-gray-50 w-full md:w-[90vw] mx-auto">
-        <div className="relative p-2 sm:p-4">
-          <div className="flex flex-col md:flex-row h-full gap-4">
+      <div className="bg-gray-50 w-full md:w-[90vw] mx-auto min-h-screen">
+        <div className="p-2 sm:p-4 h-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
             {/* First Column */}
-            <div className="flex flex-col w-full md:w-1/2 space-y-4 w-">
-              <div className="flex-1 md:flex-none min-h-fit">
-                <Suspense fallback={<div>Loading card data...</div>}>
+            <div className="flex flex-col space-y-4">
+              <div className="flex-grow">
+                <Suspense fallback={<div className="h-full flex items-center justify-center">Loading card data...</div>}>
                   <CardContainer />
                 </Suspense>
               </div>
-              <div className="flex-1 md:flex-none min-h-fit h-[40vh]">
-                <Suspense fallback={<div>Loading bill data...</div>}>
+              <div className="flex-grow">
+                <Suspense fallback={<div className="h-full flex items-center justify-center">Loading bill data...</div>}>
                   <BillChart />
                 </Suspense>
               </div>
-              <div className="flex-1 md:flex-none min-h-fit">
-                <Suspense fallback={<div>Loading price action chart...</div>}>
+              <div className="flex-grow">
+                <Suspense fallback={<div className="h-full flex items-center justify-center">Loading price action chart...</div>}>
                   <PriceActionChart />
                 </Suspense>
               </div>
             </div>
             {/* Second Column */}
-            <div className="flex flex-col w-full md:w-1/2 space-y-4">
-              <div className="flex-1 md:flex-none min-h-fit">
-                <Suspense fallback={<div>Loading pie chart...</div>}>
+            <div className="flex flex-col space-y-4">
+              <div className="flex-grow">
+                <Suspense fallback={<div className="h-full flex items-center justify-center">Loading pie chart...</div>}>
                   <PieChartContainer />
                 </Suspense>
               </div>
-              <div className="flex-1 md:flex-none md:h-[60%]">
-                <Suspense fallback={<div>Loading data table...</div>}>
+              <div className="flex-grow">
+                <Suspense fallback={<div className="h-full flex items-center justify-center">Loading data table...</div>}>
                   <DataTableContainer />
                 </Suspense>
               </div>
