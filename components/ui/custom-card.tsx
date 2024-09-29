@@ -13,7 +13,7 @@ export function CustomCard({ title, content, footer }: CustomCardProps) {
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow flex items-center justify-center">
+      <CardContent className="flex-grow flex items-center justify-center pb-4">
         {content}
       </CardContent>
       <CardFooter>{footer}</CardFooter>

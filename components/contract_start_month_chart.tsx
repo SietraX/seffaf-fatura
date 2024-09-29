@@ -35,6 +35,11 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
+const turkishMonths = [
+  'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
+  'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'
+];
+
 export function ContractStartMonthChart() {
   const { billData, isLoading, error } = useBillData();
 
@@ -42,7 +47,7 @@ export function ContractStartMonthChart() {
     if (!billData.length) return [];
 
     const monthlyData: MonthlyData[] = Array(12).fill(0).map((_, index) => ({
-      month: new Date(0, index).toLocaleString('default', { month: 'short' }),
+      month: turkishMonths[index],
       monthIndex: index + 1,
     }));
 
@@ -82,7 +87,14 @@ export function ContractStartMonthChart() {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 10, right: 0, left: -40, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" tick={{ fontSize: 8 }} />
+              <XAxis 
+                dataKey="month" 
+                tick={{ fontSize: 8 }}
+                interval={0}  // Force all ticks to be rendered
+                angle={-45}  // Rotate labels for better fit
+                textAnchor="end"  // Align rotated text
+                height={50}  // Increase height to accommodate rotated labels
+              />
               <YAxis tick={{ fontSize: 8 }} />
               <Tooltip
                 content={<CustomTooltip />}

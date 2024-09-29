@@ -155,7 +155,7 @@ export function CardContainer() {
       </div>
       <div className="w-[calc(50%-0.5rem)] sm:w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)]">
         <CustomCard
-          title="En Çok Tercih Edilen GB"
+          title="En Popüler GB"
           content={
             <div className="text-lg sm:text-xl md:text-2xl font-bold">
               {stats.mostSelectedGB.gbSize || "N/A"} GB
