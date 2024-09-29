@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import { BillDataProvider } from "@/contexts/BillDataContext";
 
 export default function RootLayout({
   children,
@@ -13,8 +14,10 @@ export default function RootLayout({
       <html lang="en" className="h-full">
         <body className="flex flex-col h-full md:bg-gray-200">
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <Navbar />
-            <main className="flex-grow">{children}</main>
+            <BillDataProvider>
+              <Navbar />
+              <main className="flex-grow">{children}</main>
+            </BillDataProvider>
           </ThemeProvider>
         </body>
       </html>

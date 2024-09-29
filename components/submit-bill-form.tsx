@@ -97,14 +97,14 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4 text-foreground">
       <div className="flex items-center space-x-4">
         <Label htmlFor="provider_name" className="w-1/3">
-          Provider
+          Operatör
         </Label>
         <div className="w-2/3">
           <Select
             onValueChange={(value) => handleInputChange("provider_name", value)}
           >
             <SelectTrigger id="provider_name" className="bg-background">
-              <SelectValue placeholder="Select provider" />
+              <SelectValue placeholder="Operatörü seçiniz" />
             </SelectTrigger>
             <SelectContent className="bg-background">
               {providers.map((provider) => (
@@ -119,7 +119,7 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
 
       <div className="flex items-center space-x-4">
         <Label htmlFor="gigabyte_package" className="w-1/3">
-          GB Package
+        GB Paketi
         </Label>
         <div className="w-2/3">
           <Select
@@ -128,7 +128,7 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
             }
           >
             <SelectTrigger id="gigabyte_package" className="bg-background">
-              <SelectValue placeholder="Select GB" />
+              <SelectValue placeholder="Paketinizi seçiniz" />
             </SelectTrigger>
             <SelectContent className="bg-background">
               {gigabytePackages.map((gb) => (
@@ -143,7 +143,7 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
 
       <div className="flex items-center space-x-4">
         <Label htmlFor="voice_call_limit" className="w-1/3">
-          Voice Call Limit
+          Dakika Limiti
         </Label>
         <Input
           type="number"
@@ -164,7 +164,7 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
 
       <div className="flex items-center space-x-4">
         <Label htmlFor="sms_limit" className="w-1/3">
-          SMS Limit
+          SMS Limiti
         </Label>
         <Input
           type="number"
@@ -185,7 +185,7 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
 
       <div className="flex items-center space-x-4">
         <Label htmlFor="bill_price" className="w-1/3">
-          Bill Price
+          Fatura Tutarı
         </Label>
         <Input
           type="number"
@@ -206,7 +206,7 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
 
       <div className="flex items-center space-x-4">
         <Label htmlFor="contract_start_month" className="w-1/3">
-          Contract Start Month
+          Sözleşme yenileme tarihi
         </Label>
         <div className="w-2/3">
           <Popover>
@@ -215,7 +215,7 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
                 variant="outline"
                 className="w-full justify-start bg-background"
               >
-                {formData.contract_start_month || "Select month"}
+                {formData.contract_start_month || "Ay seçiniz"}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[250px] p-2 bg-background">
