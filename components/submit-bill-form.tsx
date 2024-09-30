@@ -16,6 +16,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Slider } from "@/components/ui/slider";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { generatePastMonths } from "@/utils/generatePastMonths";
 import { useSubmitBill } from "@/hooks/useSubmitBill";
 import { ReCaptcha } from "@/components/recaptcha";
@@ -93,167 +95,175 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
     setRecaptchaToken(token);
   };
 
+  const findClosestGBPackage = (value: number) => {
+    return gigabytePackages.reduce((prev, curr) =>
+      Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev
+    );
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 text-foreground">
-      <div className="flex items-center space-x-4">
-        <Label htmlFor="provider_name" className="w-1/3">
-          Operatör
-        </Label>
-        <div className="w-2/3">
-          <Select
-            onValueChange={(value) => handleInputChange("provider_name", value)}
-          >
-            <SelectTrigger id="provider_name" className="bg-background">
-              <SelectValue placeholder="Operatörü seçiniz" />
-            </SelectTrigger>
-            <SelectContent className="bg-background">
-              {providers.map((provider) => (
-                <SelectItem key={provider} value={provider}>
-                  {provider}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="flex items-center space-x-4">
-        <Label htmlFor="gigabyte_package" className="w-1/3">
-        GB Paketi
-        </Label>
-        <div className="w-2/3">
-          <Select
-            onValueChange={(value) =>
-              handleInputChange("gigabyte_package", Number(value))
-            }
-          >
-            <SelectTrigger id="gigabyte_package" className="bg-background">
-              <SelectValue placeholder="Paketinizi seçiniz" />
-            </SelectTrigger>
-            <SelectContent className="bg-background">
-              {gigabytePackages.map((gb) => (
-                <SelectItem key={gb} value={gb.toString()}>
-                  {gb} GB
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="flex items-center space-x-4">
-        <Label htmlFor="voice_call_limit" className="w-1/3">
-          Dakika Limiti
-        </Label>
-        <Input
-          type="number"
-          id="voice_call_limit"
-          value={formData.voice_call_limit}
-          onChange={(e) =>
-            handleInputChange(
-              "voice_call_limit",
-              Math.max(100, Math.min(5000, Number(e.target.value)))
-            )
-          }
-          min="100"
-          max="5000"
-          required
-          className="bg-background w-2/3"
-        />
-      </div>
-
-      <div className="flex items-center space-x-4">
-        <Label htmlFor="sms_limit" className="w-1/3">
-          SMS Limiti
-        </Label>
-        <Input
-          type="number"
-          id="sms_limit"
-          value={formData.sms_limit}
-          onChange={(e) =>
-            handleInputChange(
-              "sms_limit",
-              Math.max(100, Math.min(5000, Number(e.target.value)))
-            )
-          }
-          min="100"
-          max="5000"
-          required
-          className="bg-background w-2/3"
-        />
-      </div>
-
-      <div className="flex items-center space-x-4">
-        <Label htmlFor="bill_price" className="w-1/3">
-          Fatura Tutarı
-        </Label>
-        <Input
-          type="number"
-          id="bill_price"
-          value={formData.bill_price}
-          onChange={(e) =>
-            handleInputChange(
-              "bill_price",
-              Math.max(50, Math.min(2000, Number(e.target.value)))
-            )
-          }
-          min="50"
-          max="2000"
-          required
-          className="bg-background w-2/3"
-        />
-      </div>
-
-      <div className="flex items-center space-x-4">
-        <Label htmlFor="contract_start_month" className="w-1/3">
-          Sözleşme yenileme tarihi
-        </Label>
-        <div className="w-2/3">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full justify-start bg-background"
-              >
-                {formData.contract_start_month || "Ay seçiniz"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[250px] p-2 bg-background">
-              <div className="grid grid-cols-3 gap-2">
-                {startMonths.map((month) => (
-                  <Button
-                    key={month}
-                    size="sm"
-                    variant={
-                      formData.contract_start_month === month
-                        ? "default"
-                        : "outline"
-                    }
-                    onClick={() =>
-                      handleInputChange("contract_start_month", month)
-                    }
-                    className="w-full"
-                  >
-                    {month}
-                  </Button>
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center">
+          Fatura Bilgileri
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="provider_name" className="w-1/3">
+              Operatör
+            </Label>
+            <Select
+              onValueChange={(value) =>
+                handleInputChange("provider_name", value)
+              }
+            >
+              <SelectTrigger id="provider_name" className="w-2/3">
+                <SelectValue placeholder="Operatörü seçiniz" />
+              </SelectTrigger>
+              <SelectContent>
+                {providers.map((provider) => (
+                  <SelectItem key={provider} value={provider}>
+                    {provider}
+                  </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="gigabyte_package" className="w-1/3">
+              GB Paketi
+            </Label>
+            <Select
+              onValueChange={(value) =>
+                handleInputChange("gigabyte_package", Number(value))
+              }              
+            >
+              <SelectTrigger id="gigabyte_package" className="w-2/3">
+                <SelectValue placeholder="Paketinizi seçiniz" />
+              </SelectTrigger>
+              <SelectContent>
+                {gigabytePackages.map((gb) => (
+                  <SelectItem key={gb} value={gb.toString()}>
+                    {gb} GB
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="voice_call_limit" className="w-1/3">
+              Dakika Limiti
+            </Label>
+            <div className="w-2/3 space-y-2">
+              <Slider
+                id="voice_call_limit"
+                min={100}
+                max={5000}
+                step={100}
+                value={[formData.voice_call_limit]}
+                onValueChange={(value) =>
+                  handleInputChange("voice_call_limit", value[0])
+                }
+              />
+              <div className="text-sm text-muted-foreground text-right">
+                {formData.voice_call_limit} dakika
               </div>
-            </PopoverContent>
-          </Popover>
-        </div>
-      </div>
+            </div>
+          </div>
 
-      <div className="flex justify-center">
-        <ReCaptcha onVerify={handleRecaptchaVerify} />
-      </div>
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="sms_limit" className="w-1/3">
+              SMS Limiti
+            </Label>
+            <div className="w-2/3 space-y-2">
+              <Slider
+                id="sms_limit"
+                min={100}
+                max={5000}
+                step={100}
+                value={[formData.sms_limit]}
+                onValueChange={(value) =>
+                  handleInputChange("sms_limit", value[0])
+                }
+              />
+              <div className="text-sm text-muted-foreground text-right">
+                {formData.sms_limit} SMS
+              </div>
+            </div>
+          </div>
 
-      <Button
-        type="submit"
-        className="w-full"
-        disabled={!isSubmissionAllowed || !recaptchaToken}
-      >
-        Submit
-      </Button>
-    </form>
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="bill_price" className="w-1/3">
+              Fatura Tutarı
+            </Label>
+            <Input
+              type="number"
+              id="bill_price"
+              value={formData.bill_price}
+              onChange={(e) =>
+                handleInputChange(
+                  "bill_price",
+                  Math.max(50, Math.min(2000, Number(e.target.value)))
+                )
+              }
+              min="50"
+              max="2000"
+              required
+              className="w-2/3"
+            />
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="contract_start_month" className="w-1/3">
+              Sözleşme yenileme tarihi
+            </Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-2/3 justify-start">
+                  {formData.contract_start_month || "Ay seçiniz"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[250px] p-0">
+                <div className="grid grid-cols-3 gap-2 p-2">
+                  {startMonths.map((month) => (
+                    <Button
+                      key={month}
+                      size="sm"
+                      variant={
+                        formData.contract_start_month === month
+                          ? "default"
+                          : "outline"
+                      }
+                      onClick={() =>
+                        handleInputChange("contract_start_month", month)
+                      }
+                      className="w-full"
+                    >
+                      {month}
+                    </Button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div className="flex justify-center">
+            <ReCaptcha onVerify={handleRecaptchaVerify} />
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={!isSubmissionAllowed || !recaptchaToken}
+          >
+            Paylaş
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
