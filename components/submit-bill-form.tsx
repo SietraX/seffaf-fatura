@@ -50,6 +50,7 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
   const { isSubmissionAllowed, submitBill } = useSubmitBill();
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const { toast } = useToast();
+  const [isMonthPopoverOpen, setIsMonthPopoverOpen] = useState(false);
 
   const handleInputChange = (name: keyof BillFormData, value: string | number) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -197,191 +198,202 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
   }, [recaptchaToken]);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 w-full sm:w-[80%] pb-6"> {/* Added pb-8 for padding at the bottom */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-        <Label htmlFor="provider_name" className="w-full sm:w-1/3 mb-2 sm:mb-0">
-          Operatör
-        </Label>
-        <div className="w-full sm:w-2/3">
-          <Select
-            onValueChange={(value) => handleInputChange("provider_name", value)}
-            onOpenChange={() => handleBlur("provider_name")}
-          >
-            <SelectTrigger id="provider_name" className={`w-full ${errors.provider_name && isTouched.provider_name ? 'border-red-500' : ''}`}>
-              <SelectValue placeholder="Operatörü seçiniz" />
-            </SelectTrigger>
-            <SelectContent className="bg-gray-100">
-              {providers.map((provider) => (
-                <SelectItem key={provider} value={provider}>
-                  {provider}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors.provider_name && isTouched.provider_name && (
-            <p className="text-red-500 text-sm mt-1">{errors.provider_name}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-        <Label htmlFor="gigabyte_package" className="w-full sm:w-1/3 mb-2 sm:mb-0">
-          GB Paketi
-        </Label>
-        <div className="w-full sm:w-2/3">
-          <Select
-            onValueChange={(value) =>
-              handleInputChange("gigabyte_package", Number(value))
-            }
-            onOpenChange={() => handleBlur("gigabyte_package")}
-          >
-            <SelectTrigger id="gigabyte_package" className={`w-full ${errors.gigabyte_package && isTouched.gigabyte_package ? 'border-red-500' : ''}`}>
-              <SelectValue placeholder="Paketinizi seçiniz" />
-            </SelectTrigger>
-            <SelectContent className="bg-gray-100">
-              {gigabytePackages.map((gb) => (
-                <SelectItem key={gb} value={gb.toString()}>
-                  {gb} GB
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors.gigabyte_package && isTouched.gigabyte_package && (
-            <p className="text-red-500 text-sm mt-1">{errors.gigabyte_package}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-        <Label htmlFor="voice_call_limit" className="w-full sm:w-1/3 mb-2 sm:mb-0">
-          Dakika Limiti
-        </Label>
-        <div className="w-full sm:w-2/3 space-y-2">
-          <SliderPrimitive.Root
-            className="relative flex items-center select-none touch-none w-full h-5"
-            defaultValue={[formData.voice_call_limit]}
-            max={5000}
-            min={100}
-            step={100}
-            onValueChange={(value) =>
-              handleInputChange("voice_call_limit", value[0])
-            }
-          >
-            <SliderPrimitive.Track className="bg-gray-200 relative grow rounded-full h-2">
-              <SliderPrimitive.Range className="absolute bg-blue-500 rounded-full h-full" />
-            </SliderPrimitive.Track>
-            <SliderPrimitive.Thumb
-              className="block w-5 h-5 bg-white border-2 border-blue-500 rounded-full focus:outline-none"
-              aria-label="Voice call limit"
-            />
-          </SliderPrimitive.Root>
-          <div className="text-sm text-muted-foreground text-right">
-            {formData.voice_call_limit} dakika
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-        <Label htmlFor="sms_limit" className="w-full sm:w-1/3 mb-2 sm:mb-0">
-          SMS Limiti
-        </Label>
-        <div className="w-full sm:w-2/3 space-y-2">
-          <SliderPrimitive.Root
-            className="relative flex items-center select-none touch-none w-full h-5"
-            defaultValue={[formData.sms_limit]}
-            max={5000}
-            min={100}
-            step={100}
-            onValueChange={(value) => handleInputChange("sms_limit", value[0])}
-          >
-            <SliderPrimitive.Track className="bg-gray-200 relative grow rounded-full h-2">
-              <SliderPrimitive.Range className="absolute bg-blue-500 rounded-full h-full" />
-            </SliderPrimitive.Track>
-            <SliderPrimitive.Thumb
-              className="block w-5 h-5 bg-white border-2 border-blue-500 rounded-full focus:outline-none"
-              aria-label="SMS limit"
-            />
-          </SliderPrimitive.Root>
-          <div className="text-sm text-muted-foreground text-right">
-            {formData.sms_limit} SMS
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-        <Label htmlFor="bill_price" className="w-full sm:w-1/3 mb-2 sm:mb-0">
-          Fatura Tutarı
-        </Label>
-        <div className="w-full sm:w-2/3">
-          <Input
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            id="bill_price"
-            value={formData.bill_price === null ? '' : formData.bill_price}
-            onChange={(e) => handleInputChange("bill_price", e.target.value)}
-            onBlur={() => handleBlur("bill_price")}
-            className={`w-full text-right ${errors.bill_price && isTouched.bill_price ? 'border-red-500' : ''}`}
-            aria-invalid={errors.bill_price ? 'true' : 'false'}
-            aria-describedby={errors.bill_price ? 'bill_price_error' : undefined}
-          />
-          {errors.bill_price && isTouched.bill_price && (
-            <p id="bill_price_error" className="text-red-500 text-sm mt-1">{errors.bill_price}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-        <Label htmlFor="contract_start_month" className="w-full sm:w-1/3 mb-2 sm:mb-0">
-          Sözleşme yenileme tarihi
-        </Label>
-        <div className="w-full sm:w-2/3">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className={`w-full justify-start ${errors.contract_start_month && isTouched.contract_start_month ? 'border-red-500' : ''}`}>
-                {formData.contract_start_month || "Ay seçiniz"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[250px] p-0 bg-gray-100">
-              <div className="grid grid-cols-3 gap-2 p-2">
-                {startMonths.map((month) => (
-                  <Button
-                    key={month}
-                    size="sm"
-                    variant={
-                      formData.contract_start_month === month
-                        ? "default"
-                        : "outline"
-                    }
-                    onClick={() =>
-                      handleInputChange("contract_start_month", month)
-                    }
-                    className="w-full"
-                  >
-                    {month}
-                  </Button>
+    <form onSubmit={handleSubmit} className="space-y-6 w-full flex flex-col justify-between py-6 sm:py-0 h-full sm:h-auto">
+      <div className="space-y-6">
+        {/* Provider Name */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+          <Label htmlFor="provider_name" className="w-full sm:w-1/3 mb-2 sm:mb-0">
+            Operatör
+          </Label>
+          <div className="w-full sm:w-2/3">
+            <Select
+              onValueChange={(value) => handleInputChange("provider_name", value)}
+              onOpenChange={() => handleBlur("provider_name")}
+            >
+              <SelectTrigger id="provider_name" className={`w-full ${errors.provider_name && isTouched.provider_name ? 'border-red-500' : ''}`}>
+                <SelectValue placeholder="Operatörü seçiniz" />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-100">
+                {providers.map((provider) => (
+                  <SelectItem key={provider} value={provider}>
+                    {provider}
+                  </SelectItem>
                 ))}
-              </div>
-            </PopoverContent>
-          </Popover>
-          {errors.contract_start_month && isTouched.contract_start_month && (
-            <p className="text-red-500 text-sm mt-1">{errors.contract_start_month}</p>
-          )}
+              </SelectContent>
+            </Select>
+            {errors.provider_name && isTouched.provider_name && (
+              <p className="text-red-500 text-sm mt-1">{errors.provider_name}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Gigabyte Package */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+          <Label htmlFor="gigabyte_package" className="w-full sm:w-1/3 mb-2 sm:mb-0">
+            GB Paketi
+          </Label>
+          <div className="w-full sm:w-2/3">
+            <Select
+              onValueChange={(value) =>
+                handleInputChange("gigabyte_package", Number(value))
+              }
+              onOpenChange={() => handleBlur("gigabyte_package")}
+            >
+              <SelectTrigger id="gigabyte_package" className={`w-full ${errors.gigabyte_package && isTouched.gigabyte_package ? 'border-red-500' : ''}`}>
+                <SelectValue placeholder="Paketinizi seçiniz" />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-100">
+                {gigabytePackages.map((gb) => (
+                  <SelectItem key={gb} value={gb.toString()}>
+                    {gb} GB
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.gigabyte_package && isTouched.gigabyte_package && (
+              <p className="text-red-500 text-sm mt-1">{errors.gigabyte_package}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Voice Call Limit */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+          <Label htmlFor="voice_call_limit" className="w-full sm:w-1/3 mb-2 sm:mb-0">
+            Dakika Limiti
+          </Label>
+          <div className="w-full sm:w-2/3 space-y-2">
+            <SliderPrimitive.Root
+              className="relative flex items-center select-none touch-none w-full h-5"
+              defaultValue={[formData.voice_call_limit]}
+              max={5000}
+              min={100}
+              step={100}
+              onValueChange={(value) =>
+                handleInputChange("voice_call_limit", value[0])
+              }
+            >
+              <SliderPrimitive.Track className="bg-gray-200 relative grow rounded-full h-2">
+                <SliderPrimitive.Range className="absolute bg-blue-500 rounded-full h-full" />
+              </SliderPrimitive.Track>
+              <SliderPrimitive.Thumb
+                className="block w-5 h-5 bg-white border-2 border-blue-500 rounded-full focus:outline-none"
+                aria-label="Voice call limit"
+              />
+            </SliderPrimitive.Root>
+            <div className="text-sm text-muted-foreground text-right">
+              {formData.voice_call_limit} dakika
+            </div>
+          </div>
+        </div>
+
+        {/* SMS Limit */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+          <Label htmlFor="sms_limit" className="w-full sm:w-1/3 mb-2 sm:mb-0">
+            SMS Limiti
+          </Label>
+          <div className="w-full sm:w-2/3 space-y-2">
+            <SliderPrimitive.Root
+              className="relative flex items-center select-none touch-none w-full h-5"
+              defaultValue={[formData.sms_limit]}
+              max={5000}
+              min={100}
+              step={100}
+              onValueChange={(value) => handleInputChange("sms_limit", value[0])}
+            >
+              <SliderPrimitive.Track className="bg-gray-200 relative grow rounded-full h-2">
+                <SliderPrimitive.Range className="absolute bg-blue-500 rounded-full h-full" />
+              </SliderPrimitive.Track>
+              <SliderPrimitive.Thumb
+                className="block w-5 h-5 bg-white border-2 border-blue-500 rounded-full focus:outline-none"
+                aria-label="SMS limit"
+              />
+            </SliderPrimitive.Root>
+            <div className="text-sm text-muted-foreground text-right">
+              {formData.sms_limit} SMS
+            </div>
+          </div>
+        </div>
+
+        {/* Bill Price */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+          <Label htmlFor="bill_price" className="w-full sm:w-1/3 mb-2 sm:mb-0">
+            Fatura Tutarı
+          </Label>
+          <div className="w-full sm:w-2/3">
+            <Input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              id="bill_price"
+              value={formData.bill_price === null ? '' : formData.bill_price}
+              onChange={(e) => handleInputChange("bill_price", e.target.value)}
+              onBlur={() => handleBlur("bill_price")}
+              className={`w-full text-right ${errors.bill_price && isTouched.bill_price ? 'border-red-500' : ''}`}
+              aria-invalid={errors.bill_price ? 'true' : 'false'}
+              aria-describedby={errors.bill_price ? 'bill_price_error' : undefined}
+            />
+            {errors.bill_price && isTouched.bill_price && (
+              <p id="bill_price_error" className="text-red-500 text-sm mt-1">{errors.bill_price}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Contract Start Month */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+          <Label htmlFor="contract_start_month" className="w-full sm:w-1/3 mb-2 sm:mb-0">
+            Sözleşme yenileme tarihi
+          </Label>
+          <div className="w-full sm:w-2/3">
+            <Popover open={isMonthPopoverOpen} onOpenChange={setIsMonthPopoverOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className={`w-full justify-start ${errors.contract_start_month && isTouched.contract_start_month ? 'border-red-500' : ''}`}>
+                  {formData.contract_start_month || "Ay seçiniz"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[250px] p-0 bg-gray-100">
+                <div className="grid grid-cols-3 gap-2 p-2">
+                  {startMonths.map((month) => (
+                    <Button
+                      key={month}
+                      size="sm"
+                      variant={
+                        formData.contract_start_month === month
+                          ? "default"
+                          : "outline"
+                      }
+                      onClick={() => {
+                        handleInputChange("contract_start_month", month);
+                        setIsMonthPopoverOpen(false);
+                      }}
+                      className="w-full"
+                    >
+                      {month}
+                    </Button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+            {errors.contract_start_month && isTouched.contract_start_month && (
+              <p className="text-red-500 text-sm mt-1">{errors.contract_start_month}</p>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="flex justify-center mt-6">
-        <ReCaptcha onVerify={handleRecaptchaVerify} />
-      </div>
+      <div className="space-y-6 mt-auto sm:mt-6">
+        <div className="flex justify-center">
+          <ReCaptcha onVerify={handleRecaptchaVerify} />
+        </div>
 
-      <Button
-        type="submit"
-        className="w-full mt-8 bg-blue-500 hover:bg-blue-600 text-white group"
-        disabled={!recaptchaToken}
-      >
-        <Send className="mr-2 h-5 w-5 group-hover:scale-125 group-hover:translate-x-[0.5px] group-hover:-translate-y-[0.5px] transition" />
-        Paylaş
-      </Button>
+        <Button
+          type="submit"
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white group"
+          disabled={!recaptchaToken}
+        >
+          <Send className="mr-2 h-5 w-5 group-hover:scale-125 group-hover:translate-x-[0.5px] group-hover:-translate-y-[0.5px] transition" />
+          Paylaş
+        </Button>
+      </div>
     </form>
   );
 }
