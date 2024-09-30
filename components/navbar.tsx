@@ -16,7 +16,6 @@ export function Navbar() {
         </Link>
       </div>
       <div className="flex items-center gap-2 sm:gap-4">
-        <ThemeToggle />
         {isSignedIn ? (
           <>
             <span className="text-foreground hidden sm:inline">
