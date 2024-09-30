@@ -65,7 +65,9 @@ export function CardContainer() {
 
   if (isLoading)
     return (
-      <div className="h-full flex items-center justify-center">Loading...</div>
+      <div className="h-full flex items-center justify-center">
+        Loading card container...
+      </div>
     );
   if (error)
     return (
@@ -93,59 +95,79 @@ export function CardContainer() {
         );
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 h-full">
-      <CustomCard
-        title="Toplam Kullanıcı"
-        content={<div className="text-xl sm:text-2xl font-bold">{stats.total}</div>}
-        footer={
-          <div className="text-xs text-muted-foreground">
-            kişi katılım gösterdi
-          </div>
-        }
-      />
-      <CustomCard
-        title="Aylık"
-        content={<div className="text-xl sm:text-2xl font-bold">{stats.last30Days}</div>}
-        footer={
-          <div
-            className={`text-xs ${
-              Number(percentChange30Days) >= 0
-                ? "text-green-500"
-                : "text-red-500"
-            }`}
-          >
-            {percentChange30Days}% önceki aya göre
-          </div>
-        }
-      />
-      <CustomCard
-        title="Günlük"
-        content={<div className="text-xl sm:text-2xl font-bold">{stats.last24Hours}</div>}
-        footer={
-          <div
-            className={`text-xs ${
-              Number(percentChange24Hours) >= 0
-                ? "text-green-500"
-                : "text-red-500"
-            }`}
-          >
-            {percentChange24Hours}% düne göre
-          </div>
-        }
-      />
-      <CustomCard
-        title="En Çok Tercih Edilen GB"
-        content={
-          <div className="text-xl sm:text-2xl font-bold">
-            {stats.mostSelectedGB.gbSize || "N/A"} GB
-          </div>
-        }
-        footer={
-          <div className="text-xs text-muted-foreground">
-            {stats.mostSelectedGB.count} defa tercih edildi
-          </div>
-        }
-      />
+    <div className="flex flex-wrap gap-4">
+  <div className="w-[calc(50%-0.5rem)] sm:w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)]">
+        <CustomCard
+          title="Toplam Kullanıcı"
+          content={
+            <div className="text-lg sm:text-xl md:text-2xl font-bold">
+              {stats.total}
+            </div>
+          }
+          footer={
+            <div className="text-xs text-muted-foreground">
+              kişi katılım gösterdi
+            </div>
+          }
+        />
+      </div>
+      <div className="w-[calc(50%-0.5rem)] sm:w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)]">
+        <CustomCard
+          title="Aylık"
+          content={
+            <div className="text-lg sm:text-xl md:text-2xl font-bold">
+              {stats.last30Days}
+            </div>
+          }
+          footer={
+            <div
+              className={`text-xs ${
+                Number(percentChange30Days) >= 0
+                  ? "text-green-500"
+                  : "text-red-500"
+              }`}
+            >
+              {percentChange30Days}% önceki aya göre
+            </div>
+          }
+        />
+      </div>
+      <div className="w-[calc(50%-0.5rem)] sm:w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)]">
+        <CustomCard
+          title="Günlük"
+          content={
+            <div className="text-lg sm:text-xl md:text-2xl font-bold">
+              {stats.last24Hours}
+            </div>
+          }
+          footer={
+            <div
+              className={`text-xs ${
+                Number(percentChange24Hours) >= 0
+                  ? "text-green-500"
+                  : "text-red-500"
+              }`}
+            >
+              {percentChange24Hours}% düne göre
+            </div>
+          }
+        />
+      </div>
+      <div className="w-[calc(50%-0.5rem)] sm:w-[calc(50%-0.5rem)] md:w-[calc(25%-0.75rem)]">
+        <CustomCard
+          title="En Popüler GB"
+          content={
+            <div className="text-lg sm:text-xl md:text-2xl font-bold">
+              {stats.mostSelectedGB.gbSize || "N/A"} GB
+            </div>
+          }
+          footer={
+            <div className="text-xs text-muted-foreground">
+              {stats.mostSelectedGB.count} defa tercih edildi
+            </div>
+          }
+        />
+      </div>
     </div>
   );
 }

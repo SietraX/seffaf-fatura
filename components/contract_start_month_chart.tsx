@@ -35,6 +35,11 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
+const turkishMonths = [
+  'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
+  'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'
+];
+
 export function ContractStartMonthChart() {
   const { billData, isLoading, error } = useBillData();
 
@@ -42,7 +47,7 @@ export function ContractStartMonthChart() {
     if (!billData.length) return [];
 
     const monthlyData: MonthlyData[] = Array(12).fill(0).map((_, index) => ({
-      month: new Date(0, index).toLocaleString('default', { month: 'short' }),
+      month: turkishMonths[index],
       monthIndex: index + 1,
     }));
 
@@ -75,30 +80,38 @@ export function ContractStartMonthChart() {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="flex-shrink-0 py-2">
-        <CardTitle className="text-sm sm:text-base pt-3">Sözleşme Başlangıç Tarihi</CardTitle>
+        <CardTitle className="text-sm sm:text-base">Sözleşme Başlangıç Tarihi</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 10, right: 0, left: -40, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" tick={{ fontSize: 8 }} />
-            <YAxis tick={{ fontSize: 8 }} />
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
-              wrapperStyle={{ zIndex: 100 }}
-              position={{ y: -50 }}
-            />
-            {providers.map((provider, index) => (
-              <Bar 
-                key={provider} 
-                dataKey={provider} 
-                stackId="a" 
-                fill={COLORS[index % COLORS.length]}
+      <CardContent className="flex-grow pr-2 pl-2">
+        <div className="h-[200px] sm:h-[250px] md:h-[300px] lg:h-[200px]"> {/* Responsive height */}
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ top: 10, right: 0, left: -40, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis 
+                dataKey="month" 
+                tick={{ fontSize: 8 }}
+                interval={0}  // Force all ticks to be rendered
+                angle={-45}  // Rotate labels for better fit
+                textAnchor="end"  // Align rotated text
+                height={50}  // Increase height to accommodate rotated labels
               />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
+              <YAxis tick={{ fontSize: 8 }} />
+              <Tooltip
+                content={<CustomTooltip />}
+                cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }}
+                wrapperStyle={{ zIndex: 100 }}
+              />
+              {providers.map((provider, index) => (
+                <Bar 
+                  key={provider} 
+                  dataKey={provider} 
+                  stackId="a" 
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   )

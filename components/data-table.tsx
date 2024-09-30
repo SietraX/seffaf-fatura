@@ -61,10 +61,10 @@ export function DataTable<TData, TValue>({
     const handleResize = () => {
       const height = window.innerHeight;
       let newPageSize;
-      if (height < 600) newPageSize = 4;
-      else if (height < 800) newPageSize = 5;
-      else if (height < 1000) newPageSize = 7;
-      else newPageSize = 10;
+      if (height < 600) newPageSize = 6;
+      else if (height < 800) newPageSize = 8;
+      else if (height < 1000) newPageSize = 11;
+      else newPageSize = 12;
 
       setPagination((prev) => ({ ...prev, pageSize: newPageSize }));
     };

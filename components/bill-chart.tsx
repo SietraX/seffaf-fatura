@@ -8,13 +8,12 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   Cell,
 } from "recharts";
 import { useBillData } from "@/contexts/BillDataContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const colors = {
   Turkcell: "#ffc658",
@@ -36,8 +35,7 @@ export default function BillChart() {
       (item) => item.gigabyte_package === selectedGB
     );
 
-    const providerTotals: Record<string, { billSum: number; count: number }> =
-      {};
+    const providerTotals: Record<string, { billSum: number; count: number }> = {};
 
     filteredData.forEach((bill) => {
       if (!providerTotals[bill.provider_name]) {
@@ -60,7 +58,7 @@ export default function BillChart() {
   }, [processedData]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading bill chart...</div>;
   }
 
   if (error) {
@@ -68,24 +66,23 @@ export default function BillChart() {
   }
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col pr-12 pl-6 pb-4">
       <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 pb-2">
         <CardTitle className="text-base">Ortalama Tarife Ücretleri</CardTitle>
-        <div className="flex flex-wrap gap-1">
-          {gbPackages.map((gb) => (
-            <Button
-              key={gb}
-              variant={selectedGB === gb ? "default" : "outline"}
-              size="sm"
-              className="text-xs sm:text-sm px-1 sm:px-2"
-              onClick={() => setSelectedGB(gb)}
-            >
-              {gb}GB
-            </Button>
-          ))}
-        </div>
+        <Select value={selectedGB.toString()} onValueChange={(value) => setSelectedGB(Number(value))}>
+          <SelectTrigger className="w-[100px]" aria-label="Select GB package">
+            <SelectValue placeholder="Select GB" />
+          </SelectTrigger>
+          <SelectContent className="bg-white">
+            {gbPackages.map((gb) => (
+              <SelectItem key={gb} value={gb.toString()}>
+                {gb} GB
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </CardHeader>
-      <CardContent className="flex-grow pb-2">
+      <CardContent className="flex-grow pt-0 overflow-hidden max-h-[30vh] pr-12 pl-6 pb-4">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={processedData}

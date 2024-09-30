@@ -31,6 +31,11 @@ const chartConfig: ChartConfig = {
   },
 } satisfies ChartConfig;
 
+const turkishMonths = [
+  'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
+  'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'
+];
+
 export function PriceActionChart() {
   const { billData, isLoading, error } = useBillData();
   const [selectedGB, setSelectedGB] = useState<string>("");
@@ -72,22 +77,18 @@ export function PriceActionChart() {
     if (!selectedGB) return [];
 
     const now = new Date();
-    const timeFilter = parseInt(timeRange) * 30 * 24 * 60 * 60 * 1000; // Convert months to milliseconds
+    const timeFilterMonths = parseInt(timeRange);
+    const timeFilterMs = timeFilterMonths * 30 * 24 * 60 * 60 * 1000;
 
     const filteredBills = billData.filter((bill) => {
       const contractDate = new Date(bill.contract_start_date);
-      const isSelected =
-        bill.gigabyte_package.toString() === selectedGB &&
-        contractDate.getTime() > now.getTime() - timeFilter;
-
-      return isSelected;
+      return bill.gigabyte_package.toString() === selectedGB &&
+             contractDate.getTime() > now.getTime() - timeFilterMs;
     });
 
     const groupedByMonthAndProvider = filteredBills.reduce((acc, bill) => {
       const date = new Date(bill.contract_start_date);
-      const monthYear = `${date.getFullYear()}-${String(
-        date.getMonth() + 1
-      ).padStart(2, "0")}`;
+      const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
       if (!acc[monthYear]) {
         acc[monthYear] = {};
       }
@@ -98,9 +99,7 @@ export function PriceActionChart() {
       return acc;
     }, {} as Record<string, Record<string, number[]>>);
 
-    const providers = Array.from(
-      new Set(filteredBills.map((bill) => bill.provider_name))
-    );
+    const providers = Array.from(new Set(filteredBills.map((bill) => bill.provider_name)));
 
     const result = Object.entries(groupedByMonthAndProvider)
       .map(([monthYear, providerData]) => {
@@ -114,44 +113,22 @@ export function PriceActionChart() {
       })
       .sort((a, b) => a.date.localeCompare(b.date));
 
-    // Fill in gaps with previous median values and handle null values
-    const filledResult = result.reduce((acc, curr, index) => {
-      if (index === 0) {
-        acc.push(curr);
-        return acc;
-      }
+    // Generate all months for the selected time range
+    const relevantMonths = Array.from({ length: timeFilterMonths }, (_, i) => {
+      const date = new Date(now.getFullYear(), now.getMonth() - timeFilterMonths + i + 1, 1);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    });
 
-      const prevDate = new Date(acc[acc.length - 1].date);
-      const currDate = new Date(curr.date);
-      const monthDiff =
-        (currDate.getFullYear() - prevDate.getFullYear()) * 12 +
-        currDate.getMonth() -
-        prevDate.getMonth();
+    // Fill in missing months and ensure all providers have entries
+    const filledResult = relevantMonths.map(monthYear => {
+      const existingData = result.find(item => item.date === monthYear) || { date: monthYear };
+      return {
+        ...existingData,
+        ...providers.reduce((acc, provider) => ({ ...acc, [provider]: existingData[provider] ?? null }), {})
+      };
+    });
 
-      // Fill in missing months
-      for (let i = 1; i < monthDiff; i++) {
-        const fillerDate = new Date(
-          prevDate.getFullYear(),
-          prevDate.getMonth() + i,
-          1
-        );
-        const fillerEntry = {
-          date: `${fillerDate.getFullYear()}-${String(
-            fillerDate.getMonth() + 1
-          ).padStart(2, "0")}`,
-          ...acc[acc.length - 1],
-        };
-        delete fillerEntry.date;
-        acc.push(fillerEntry);
-      }
-
-      // Add current month data
-      acc.push(curr);
-
-      return acc;
-    }, [] as any[]);
-
-    // Fill null values with closest non-null value
+    // Fill null values with closest non-null value (forward and backward fill)
     providers.forEach((provider) => {
       let lastNonNullValue: number | null = null;
       for (let i = 0; i < filledResult.length; i++) {
@@ -175,12 +152,12 @@ export function PriceActionChart() {
     return filledResult;
   }, [billData, selectedGB, timeRange]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading price action chart...</div>;
   if (error) return <div>Error: {error}</div>;
   if (billData.length === 0) return <div>No data available</div>;
 
   return (
-    <Card className="w-full h-full flex flex-col">
+    <Card className="h-full flex flex-col">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 flex-shrink-0">
         <CardTitle className="text-base">Fiyat Değişim Grafiği</CardTitle>
         <div className="flex space-x-2">
@@ -188,7 +165,7 @@ export function PriceActionChart() {
             <SelectTrigger className="w-[100px]" aria-label="Select GB package">
               <SelectValue placeholder="Select GB" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white">
               {gbOptions.map((gb) => (
                 <SelectItem key={gb} value={gb}>
                   {gb} GB
@@ -200,7 +177,7 @@ export function PriceActionChart() {
             <SelectTrigger className="w-[140px]" aria-label="Select time range">
               <SelectValue placeholder="Select time range" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white">
               {timeRanges.map((range) => (
                 <SelectItem key={range.value} value={range.value}>
                   {range.label}
@@ -210,11 +187,14 @@ export function PriceActionChart() {
           </Select>
         </div>
       </CardHeader>
-      <CardContent className="flex-grow pt-0 overflow-hidden">
+      <CardContent className="pt-0 overflow-hidden max-h-[30vh] pr-12 pl-6 pb-4">
         {filteredData.length > 0 ? (
           <ChartContainer config={chartConfig} className="h-full w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <AreaChart
+                data={filteredData}
+                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+              >
                 <defs>
                   {Array.from(new Set(billData.map((bill) => bill.provider_name))).map((provider, index) => (
                     <linearGradient key={provider} id={`fill${provider}`} x1="0" y1="0" x2="0" y2="1">
@@ -230,8 +210,9 @@ export function PriceActionChart() {
                   axisLine={false}
                   tickMargin={8}
                   tickFormatter={(value) => {
-                    const [year, month] = value.split("-")
-                    return `${new Date(parseInt(year), parseInt(month) - 1).toLocaleString("default", { month: "short" })} ${year}`
+                    const [year, month] = value.split("-");
+                    const monthIndex = parseInt(month) - 1;
+                    return `${turkishMonths[monthIndex]} ${year.slice(2)}`;
                   }}
                   interval="preserveEnd"
                   minTickGap={30}
@@ -246,10 +227,7 @@ export function PriceActionChart() {
                     <ChartTooltipContent
                       labelFormatter={(value) => {
                         const [year, month] = value.split("-")
-                        return new Date(parseInt(year), parseInt(month) - 1).toLocaleString("default", {
-                          month: "long",
-                          year: "numeric",
-                        })
+                        return `${turkishMonths[parseInt(month) - 1]} ${year}`;
                       }}
                       indicator="dot"
                     />

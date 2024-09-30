@@ -7,7 +7,6 @@ import { DataTable } from "@/components/data-table"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -81,55 +80,57 @@ export function DataTableContainer() {
   };
 
   return (
-    <Card className="w-full h-full flex flex-col">
-      <CardHeader className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 flex-shrink-0 p-4">
-        <div>
-          <CardTitle className="text-xl font-bold">Fatura Detayları</CardTitle>
-        </div>
-        <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
-          <Select
-            value={selectedGBPackage?.toString() ?? "all"}
-            onValueChange={(value) =>
-              setSelectedGBPackage(value === "all" ? null : Number(value))
-            }
-          >
-            <SelectTrigger className="w-full sm:w-[160px]" aria-label="Select GB package">
-              <SelectValue placeholder="Bütün GB Paketleri" />
-            </SelectTrigger>
-            <SelectContent className="bg-white">
-              <SelectItem value="all">Bütün GB Paketleri</SelectItem>
-              {gbPackages.map((gb) => (
-                <SelectItem key={gb} value={gb.toString()}>
-                  {gb} GB
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            value={selectedProvider ?? "all"}
-            onValueChange={(value) =>
-              handleProviderChange(value === "all" ? null : value)
-            }
-          >
-            <SelectTrigger className="w-full sm:w-[160px]" aria-label="Select provider">
-              <SelectValue placeholder="Bütün Operatörler" />
-            </SelectTrigger>
-            <SelectContent className="bg-white">
-              <SelectItem value="all">Bütün Operatörler</SelectItem>
-              {providers.map((provider) => (
-                <SelectItem key={provider} value={provider}>
-                  {provider}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </CardHeader>
-      <CardContent className="flex-grow overflow-hidden p-4">
-        <div className="h-full overflow-hidden">
-          <DataTable columns={columns} data={translatedData} />
-        </div>
-      </CardContent>
-    </Card>
+    <div>    
+      <Card className="w-full h-full flex flex-col">
+        <CardHeader className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 flex-shrink-0 p-4">
+          <div>
+            <CardTitle className="text-xl font-bold">Fatura Detayları</CardTitle>
+          </div>
+          <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
+            <Select
+              value={selectedGBPackage?.toString() ?? "all"}
+              onValueChange={(value) =>
+                setSelectedGBPackage(value === "all" ? null : Number(value))
+              }
+            >
+              <SelectTrigger className="w-full sm:w-[160px]" aria-label="Select GB package">
+                <SelectValue placeholder="Bütün GB Paketleri" />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                <SelectItem value="all">Bütün GB Paketleri</SelectItem>
+                {gbPackages.map((gb) => (
+                  <SelectItem key={gb} value={gb.toString()}>
+                    {gb} GB
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={selectedProvider ?? "all"}
+              onValueChange={(value) =>
+                handleProviderChange(value === "all" ? null : value)
+              }
+            >
+              <SelectTrigger className="w-full sm:w-[160px]" aria-label="Select provider">
+                <SelectValue placeholder="Bütün Operatörler" />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                <SelectItem value="all">Bütün Operatörler</SelectItem>
+                {providers.map((provider) => (
+                  <SelectItem key={provider} value={provider}>
+                    {provider}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardHeader>
+        <CardContent className="flex-grow overflow-auto p-4">
+          <div className="h-full">
+            <DataTable columns={columns} data={translatedData} />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

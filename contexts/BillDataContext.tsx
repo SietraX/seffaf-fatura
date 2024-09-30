@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
+import { createClient } from "@supabase/supabase-js";
 
 export interface BillData {
   provider_name: string;
@@ -18,14 +18,17 @@ interface BillDataContextType {
   billData: BillData[];
   isLoading: boolean;
   error: string | null;
+  averageBill: number | null;
 }
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const BillDataContext = createContext<BillDataContextType | undefined>(undefined);
+const BillDataContext = createContext<BillDataContextType | undefined>(
+  undefined
+);
 
 export function BillDataProvider({ children }: { children: React.ReactNode }) {
   const [billData, setBillData] = useState<BillData[]>([]);
@@ -36,19 +39,19 @@ export function BillDataProvider({ children }: { children: React.ReactNode }) {
     fetchInitialData();
 
     const subscription = supabase
-      .channel('table-db-changes')
+      .channel("table-db-changes")
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: '*',
-          schema: 'public',
-          table: 'user_bills'
+          event: "*",
+          schema: "public",
+          table: "user_bills",
         },
         (payload) => {
           fetchInitialData(); // Refetch all data when a change occurs
         }
       )
-      .subscribe()
+      .subscribe();
 
     return () => {
       subscription.unsubscribe();
@@ -58,22 +61,32 @@ export function BillDataProvider({ children }: { children: React.ReactNode }) {
   const fetchInitialData = async () => {
     try {
       const { data, error } = await supabase
-        .from('user_bills')
-        .select('provider_name, gigabyte_package, voice_call_limit, sms_limit, bill_price, contract_start_month, contract_start_date, updated_at');
+        .from("user_bills")
+        .select(
+          "provider_name, gigabyte_package, voice_call_limit, sms_limit, bill_price, contract_start_month, contract_start_date, updated_at"
+        );
 
       if (error) throw error;
 
       setBillData(data);
       setIsLoading(false);
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setError('Failed to fetch data');
+      console.error("Error fetching data:", error);
+      setError("Failed to fetch data");
       setIsLoading(false);
     }
   };
 
+  const averageBill = useMemo(() => {
+    if (isLoading || error || billData.length === 0) {
+      return null;
+    }
+    const totalBill = billData.reduce((sum, bill) => sum + bill.bill_price, 0);
+    return Math.round(totalBill / billData.length);
+  }, [billData, isLoading, error]);
+
   return (
-    <BillDataContext.Provider value={{ billData, isLoading, error }}>
+    <BillDataContext.Provider value={{ billData, isLoading, error, averageBill }}>
       {children}
     </BillDataContext.Provider>
   );
@@ -82,7 +95,7 @@ export function BillDataProvider({ children }: { children: React.ReactNode }) {
 export function useBillData() {
   const context = useContext(BillDataContext);
   if (context === undefined) {
-    throw new Error('useBillData must be used within a BillDataProvider');
+    throw new Error("useBillData must be used within a BillDataProvider");
   }
   return context;
 }
