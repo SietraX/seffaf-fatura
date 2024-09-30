@@ -93,6 +93,28 @@ export default function LandingPage() {
           >
             {headline}
           </motion.h1>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{
+              opacity: isComplete3 ? 1 : 0,
+              y: isComplete3 ? 0 : 20,
+            }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="flex flex-col sm:flex-row items-start sm:items-center md:justify-end space-y-12 sm:space-y-0 sm:space-x-6"
+          >
+            <div className="relative">
+              <SubmitBillButton />
+            </div>
+            <div className="relative">
+              <button
+                onClick={handleCheckStats}
+                className="bg-green-500 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-600 transition-colors shadow-md"
+              >
+                Faturaları görüntüle
+              </button>
+            </div>
+          </motion.div>
         </div>
 
         <motion.div
@@ -102,39 +124,28 @@ export default function LandingPage() {
             y: isComplete3 ? 0 : 20,
           }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="space-y-8"
+          className="relative"
         >
-          <div className="relative w-full">
-            <div className="absolute top-[18%] right-[15%] z-10">
-              <div className="relative">
-                <div className="absolute inset-0 bg-red-500 rounded-full blur-sm"></div>
-                <div className="relative bg-red-500 text-white w-16 h-16 rounded-full font-bold text-2xl shadow-lg flex items-center justify-center">
-                  YENİ
-                </div>
+          <Image
+            src="/dashboard.png"
+            alt="Dashboard Screenshot"
+            width={1920}
+            height={1080}
+            style={{
+              width: "100%",
+              height: "auto",
+              objectFit: "contain",
+            }}
+            quality={100}
+            className="rounded-xl"
+          />
+          <div className="absolute top-[17%] right-[15%] z-10">
+            <div className="relative">
+              <div className="absolute inset-0 bg-red-500 rounded-full blur-sm"></div>
+              <div className="relative bg-red-500 text-white w-20 h-20 rounded-full font-bold text-3xl shadow-lg flex items-center justify-center">
+                YENİ
               </div>
             </div>
-            <Image
-              src="/dashboard.png"
-              alt="Dashboard Screenshot"
-              width={1920}
-              height={1080}
-              style={{
-                width: "100%",
-                height: "auto",
-                objectFit: "contain",
-              }}
-              quality={100}
-              className="rounded-xl"
-            />
-          </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 pb-10">
-            <SubmitBillButton />
-            <button
-              onClick={handleCheckStats}
-              className="bg-green-500 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-600 transition-colors shadow-md"
-            >
-              Faturaları görüntüle
-            </button>
           </div>
         </motion.div>
       </div>
