@@ -12,7 +12,7 @@ export default function RootLayout({
   return (
     <ClerkProvider signInUrl="/sign-in" signUpUrl="/sign-up">
       <html lang="en" className="h-full">
-        <body className="flex flex-col h-full md:bg-gray-200">
+        <body className="flex flex-col h-full md:bg-gray-100">
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <BillDataProvider>
               <Navbar />

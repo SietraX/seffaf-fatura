@@ -9,7 +9,7 @@ interface CustomCardProps {
 
 export function CustomCard({ title, content, footer }: CustomCardProps) {
   return (
-    <Card className="flex flex-col h-full">
+    <Card className="flex flex-col h-full border-gray-300">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>

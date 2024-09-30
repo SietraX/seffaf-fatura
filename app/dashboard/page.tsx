@@ -9,7 +9,7 @@ import { PieChartContainer } from "@/components/pie-chart-container";
 export default function Dashboard() {
   return (
     <BillDataProvider>
-      <div className="bg-gray-50 w-full md:w-[90vw] mx-auto min-h-screen">
+      <div className="bg-gray-100 w-full md:w-[90vw] mx-auto min-h-screen">
         <div className="p-2 sm:p-4 h-full">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
             {/* First Column */}
