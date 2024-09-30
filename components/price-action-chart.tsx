@@ -69,8 +69,8 @@ export function PriceActionChart() {
   }, [mostSelectedGB, selectedGB]);
 
   const timeRanges = [
-    { value: "6", label: "Last 6 months" },
-    { value: "12", label: "Last 12 months" },
+    { value: "6", label: "Son 6 ay" },
+    { value: "12", label: "Son 12 ay" },
   ];
 
   const filteredData = useMemo(() => {
