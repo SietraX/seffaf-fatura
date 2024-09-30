@@ -18,11 +18,15 @@ const faqData = [
   },
   {
     question: "Grafiklerden ne tür bilgiler edinebilirim?",
-    answer: "Grafiklerimiz, operatörler arasındaki ortalama fatura fiyatları, gigabayt paketlerinin dağılımı ve zaman içindeki fiyat eğilimleri hakkında bilgiler sunarak, planınızı piyasa ortalamaları ile karşılaştırmanıza yardımcı olur."
+    answer: "Grafiklerimiz, operatörler arasındaki ortalama fatura fiyatları, gigabyte paketlerinin dağılımı ve zaman içindeki fiyat eğilimleri hakkında bilgiler sunarak, planınızı piyasa ortalamaları ile karşılaştırmanıza yardımcı olur."
   },
   {
     question: "Gönderdiğim fatura bilgilerini güncelleyebilir miyim?",
     answer: "Evet, fatura bilgilerinizi her 30 günde bir güncelleyebilirsiniz. Bu, güncel ve doğru verileri korumamıza yardımcı olur."
+  },
+  {
+    question: "İleride daha farklı özellikler eklenecek mi?",
+    answer: "Projenin yol haritası üzerine çalışmalar devam etmektedir."
   }
 ]
 

@@ -68,7 +68,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="max-h-screen bg-gradient-to-br from-blue-50 to-white text-gray-800 p-4 sm:p-8 flex items-center justify-center overflow-auto">
+    <div className="max-h-screen md:min-h-[95vh] bg-gradient-to-br from-blue-50 to-white text-gray-800 p-4 sm:p-8 flex items-center justify-center overflow-auto pt-28 md:pt-0">
       <div className="max-w-8xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <div className="space-y-4 sm:space-y-8 md:pl-12">
           <motion.p

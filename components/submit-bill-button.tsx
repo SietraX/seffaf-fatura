@@ -20,22 +20,30 @@ import { useSubmitBill } from "@/hooks/useSubmitBill";
 import { Share } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export function SubmitBillButton() {
+interface SubmitBillButtonProps {
+  isNavbar?: boolean;
+}
+
+export function SubmitBillButton({ isNavbar = false }: SubmitBillButtonProps) {
   const [open, setOpen] = useState(false);
   const { isSignedIn, isSubmissionAllowed, nextSubmissionDate } =
     useSubmitBill();
 
   const buttonContent = (
     <>
-      <Share className="mr-2 h-5 w-5" />
-      Faturanı paylaş
+      <Share className={`${isNavbar ? 'mr-1 h-4 w-4' : 'mr-2 h-5 w-5'}`} />
+      {isNavbar ? "Paylaş" : "Faturanı paylaş"}
     </>
   );
+
+  const buttonClass = isNavbar
+    ? "text-sm px-2 py-1 h-8 bg-blue-500 hover:bg-blue-600 rounded-xl text-white hover:shadow-lg transition"
+    : "landing-button bg-blue-500 hover:bg-blue-600";
 
   if (!isSignedIn) {
     return (
       <Button
-        className="landing-button bg-blue-500 hover:bg-blue-600"
+        className={buttonClass}
         onClick={() => (window.location.href = "/sign-in")}
       >
         {buttonContent}
@@ -48,7 +56,7 @@ export function SubmitBillButton() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           {isSubmissionAllowed ? (
-            <Button className="landing-button bg-blue-500 hover:bg-blue-600">
+            <Button className={buttonClass}>
               {buttonContent}
             </Button>
           ) : (
@@ -56,7 +64,7 @@ export function SubmitBillButton() {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    className="landing-button bg-blue-500 hover:bg-blue-600"
+                    className={buttonClass}
                     disabled
                   >
                     {buttonContent}

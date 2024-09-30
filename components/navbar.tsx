@@ -13,14 +13,14 @@ export function Navbar() {
 
   return (
     <nav className="flex justify-between items-center p-4 bg-background shadow h-[6vh]">
-      <div className="flex items-center gap-2">
+      <Link href="/" className="flex items-center gap-2">
         <img src="/logo.png" alt="Logo" className="h-8 w-8" />
-        <Link href="/" className="text-foreground text-xl font-bold hidden sm:inline">
+        <span className="text-foreground text-xl font-bold">
           Fatura
-        </Link>
-      </div>
+        </span>
+      </Link>
       <div className="flex items-center gap-2 sm:gap-4">
-        {isDashboard && <SubmitBillButton />}
+        {isDashboard && <SubmitBillButton isNavbar={true} />}
         {isSignedIn ? (
           <>
             <span className="text-foreground hidden sm:inline">
