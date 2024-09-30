@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { SubmitBillButton } from "./submit-bill-button";
 import { useBillData } from "@/contexts/BillDataContext";
 import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
+import { Search } from "@/node_modules/lucide-react";
 
 const useTypewriter = (
   text: string,
