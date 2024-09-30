@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { SubmitBillButton } from "./submit-bill-button";
 import { useBillData } from "@/contexts/BillDataContext";
 import { Button } from '@/components/ui/button';
+import { Search } from 'lucide-react';
 
 const useTypewriter = (
   text: string,
@@ -112,6 +113,7 @@ export default function LandingPage() {
                 onClick={handleCheckStats}
                 className="landing-button bg-green-500 hover:bg-green-600"
               >
+                <Search className="mr-2 h-5 w-5" />
                 Faturaları görüntüle
               </Button>
             </div>

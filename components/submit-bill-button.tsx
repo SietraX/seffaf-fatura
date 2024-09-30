@@ -6,10 +6,18 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { SubmitBillForm } from '@/components/submit-bill-form'
 import { useSubmitBill } from '@/hooks/useSubmitBill'
+import { Share } from 'lucide-react'
 
 export function SubmitBillButton() {
   const [open, setOpen] = useState(false)
   const { isSignedIn, isSubmissionAllowed, nextSubmissionDate } = useSubmitBill()
+
+  const buttonContent = (
+    <>
+      <Share className="mr-2 h-5 w-5" />
+      Faturanı paylaş
+    </>
+  )
 
   if (!isSignedIn) {
     return (
@@ -17,7 +25,7 @@ export function SubmitBillButton() {
         className="landing-button bg-blue-500 hover:bg-blue-600"
         onClick={() => window.location.href = '/sign-in'}
       >
-        Faturanı paylaş
+        {buttonContent}
       </Button>
     )
   }
@@ -27,14 +35,14 @@ export function SubmitBillButton() {
       <DialogTrigger asChild>
         {isSubmissionAllowed ? (
           <Button className="landing-button bg-blue-500 hover:bg-blue-600">
-            Faturanı paylaş
+            {buttonContent}
           </Button>
         ) : (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button className="landing-button bg-blue-500 hover:bg-blue-600" disabled>
-                  Faturanı paylaş
+                  {buttonContent}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>

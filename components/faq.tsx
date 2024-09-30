@@ -28,7 +28,7 @@ const faqData = [
 
 export function FAQ() {
   return (
-    <div className="w-full max-w-3xl mx-auto my-8 pt-24">
+    <div className="w-[90vw] max-w-3xl mx-auto my-8 pt-24">
       <h2 className="text-2xl font-bold mb-4">Sıkça Sorulan Sorular</h2>
       <Accordion type="single" collapsible className="w-full">
         {faqData.map((item, index) => (

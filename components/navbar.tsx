@@ -2,10 +2,14 @@
 
 import Link from "next/link";
 import { UserButton, useUser, SignInButton } from "@clerk/nextjs";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { SubmitBillButton } from "@/components/submit-bill-button";
+import { usePathname } from "next/navigation";
 
 export function Navbar() {
   const { isSignedIn, user } = useUser();
+  const pathname = usePathname();
+
+  const isDashboard = pathname === "/dashboard";
 
   return (
     <nav className="flex justify-between items-center p-4 bg-background shadow h-[6vh]">
@@ -16,6 +20,7 @@ export function Navbar() {
         </Link>
       </div>
       <div className="flex items-center gap-2 sm:gap-4">
+        {isDashboard && <SubmitBillButton />}
         {isSignedIn ? (
           <>
             <span className="text-foreground hidden sm:inline">
