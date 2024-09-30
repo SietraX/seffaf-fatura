@@ -14,8 +14,9 @@ export function SubmitBillButton() {
   if (!isSignedIn) {
     return (
       <Button 
-      className="bg-blue-500 text-white px-6 py-6 rounded-full text-lg font-semibold hover:bg-blue-600 transition-colors"
-      onClick={() => window.location.href = '/sign-in'}>
+        className="landing-button bg-blue-500 hover:bg-blue-600"
+        onClick={() => window.location.href = '/sign-in'}
+      >
         Faturanı paylaş
       </Button>
     )
@@ -25,12 +26,16 @@ export function SubmitBillButton() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {isSubmissionAllowed ? (
-          <Button className="bg-blue-500 text-white px-6 py-3 rounded-full text-xl font-semibold shadow-md hover:bg-blue-600 transition-colors">Faturanı paylaş</Button>
+          <Button className="landing-button bg-blue-500 hover:bg-blue-600">
+            Faturanı paylaş
+          </Button>
         ) : (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button className="bg-blue-500 text-white px-6 py-3 rounded-full text-xl font-semibold shadow-md hover:bg-blue-600 transition-colors" disabled>Faturanı paylaş</Button>
+                <Button className="landing-button bg-blue-500 hover:bg-blue-600" disabled>
+                  Faturanı paylaş
+                </Button>
               </TooltipTrigger>
               <TooltipContent>
                 <p>Faturanı şu tarihten itibaren güncelleyebilirsin: {nextSubmissionDate?.toLocaleDateString()}</p>

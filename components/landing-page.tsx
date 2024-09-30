@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { SubmitBillButton } from "./submit-bill-button";
 import { useBillData } from "@/contexts/BillDataContext";
+import { Button } from '@/components/ui/button';
 
 const useTypewriter = (
   text: string,
@@ -101,18 +102,18 @@ export default function LandingPage() {
               y: isComplete3 ? 0 : 20,
             }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-col sm:flex-row items-start sm:items-center md:justify-end space-y-12 sm:space-y-0 sm:space-x-6"
+            className="flex flex-col sm:flex-row items-start sm:items-center md:justify-end space-y-4 sm:space-y-0 sm:space-x-4 mt-8"
           >
             <div className="relative">
               <SubmitBillButton />
             </div>
             <div className="relative">
-              <button
+              <Button
                 onClick={handleCheckStats}
-                className="bg-green-500 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-600 transition-colors shadow-md"
+                className="landing-button bg-green-500 hover:bg-green-600"
               >
                 Faturaları görüntüle
-              </button>
+              </Button>
             </div>
           </motion.div>
         </div>

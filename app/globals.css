@@ -23,3 +23,7 @@ body {
 }
 
 /* ... rest of your existing styles ... */
+
+.landing-button {
+  @apply text-white px-6 py-4 rounded-2xl text-xl font-bold transition-colors shadow-xl w-full sm:w-auto min-h-12;
+}
