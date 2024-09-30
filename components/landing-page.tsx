@@ -66,9 +66,9 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="h-full bg-gradient-to-br from-blue-50 to-white text-gray-800 p-4 sm:p-8 flex items-center justify-center overflow-auto">
-      <div className="max-w-[75vw] w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-4 sm:space-y-8">
+    <div className="max-h-screen bg-gradient-to-br from-blue-50 to-white text-gray-800 p-4 sm:p-8 flex items-center justify-center overflow-auto">
+      <div className="max-w-8xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        <div className="space-y-4 sm:space-y-8 md:pl-12">
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -89,101 +89,54 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: isComplete2 ? 1 : 0 }}
             transition={{ duration: 0.5 }}
-            className="text-3xlxl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
           >
             {headline}
           </motion.h1>
         </div>
-        <div className="relative h-full flex flex-col justify-between">
-          <div className="space-y-4 sm:space-y-8">
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{
-                opacity: isComplete3 ? 1 : 0,
-                x: isComplete3 ? 0 : 50,
-              }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <svg
-                  width="100"
-                  height="50"
-                  viewBox="0 0 150 75"
-                  className="text-blue-500"
-                >
-                  <path
-                    d="M0,37.5 Q75,0 150,37.5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                  />
-                  <polygon
-                    points="142.5,33 150,37.5 142.5,42"
-                    fill="currentColor"
-                  />
-                </svg>
-                <SubmitBillButton />
-              </div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{
-                opacity: isComplete3 ? 1 : 0,
-                x: isComplete3 ? 0 : 50,
-              }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <svg
-                  width="100"
-                  height="50"
-                  viewBox="0 0 150 75"
-                  className="text-green-500"
-                >
-                  <path
-                    d="M0,37.5 Q75,75 150,37.5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                  />
-                  <polygon
-                    points="142.5,33 150,37.5 142.5,42"
-                    fill="currentColor"
-                  />
-                </svg>
-                <button
-                  onClick={handleCheckStats}
-                  className="bg-green-500 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-600 transition-colors"
-                >
-                  Faturaları görüntüle
-                </button>
-              </div>
-            </motion.div>
-          </div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{
-              opacity: isComplete3 ? 1 : 0,
-              scale: isComplete3 ? 1 : 0.9,
-            }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            className="mt-8 self-end"
-          >
-            <div className="relative w-full max-w-md aspect-[4/3] bg-gray-200 rounded-lg overflow-hidden shadow-lg">
-              <Image
-                src="/placeholder.svg"
-                alt="Dashboard Screenshot"
-                style={{ objectFit: "cover" }}
-                fill
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                <span className="text-xl sm:text-2xl font-bold text-white">
-                  DASHBOARD SCREENSHOT
-                </span>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{
+            opacity: isComplete3 ? 1 : 0,
+            y: isComplete3 ? 0 : 20,
+          }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="space-y-8"
+        >
+          <div className="relative w-full">
+            <div className="absolute top-[18%] right-[15%] z-10">
+              <div className="relative">
+                <div className="absolute inset-0 bg-red-500 rounded-full blur-sm"></div>
+                <div className="relative bg-red-500 text-white w-16 h-16 rounded-full font-bold text-2xl shadow-lg flex items-center justify-center">
+                  YENİ
+                </div>
               </div>
             </div>
-          </motion.div>
-        </div>
+            <Image
+              src="/dashboard.png"
+              alt="Dashboard Screenshot"
+              width={1920}
+              height={1080}
+              style={{
+                width: "100%",
+                height: "auto",
+                objectFit: "contain",
+              }}
+              quality={100}
+              className="rounded-xl"
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 pb-10">
+            <SubmitBillButton />
+            <button
+              onClick={handleCheckStats}
+              className="bg-green-500 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-600 transition-colors shadow-md"
+            >
+              Faturaları görüntüle
+            </button>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
