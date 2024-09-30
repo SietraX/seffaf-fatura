@@ -27,3 +27,35 @@ body {
 .landing-button {
   @apply text-white px-6 py-4 rounded-2xl text-xl font-bold transition-colors shadow-xl w-full sm:w-auto min-h-6 flex items-center justify-center;
 }
+
+/* Custom Slider Styling */
+.slider-container {
+  @apply relative w-full h-6 flex items-center;
+}
+
+.slider-track {
+  @apply absolute h-2 w-full bg-gray-200 rounded-full;
+}
+
+.slider-range {
+  @apply absolute h-2 bg-blue-500 rounded-full;
+}
+
+.slider-thumb {
+  @apply absolute w-6 h-6 bg-white border-2 border-blue-500 rounded-full shadow cursor-pointer;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Remove up/down arrows from number inputs */
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}

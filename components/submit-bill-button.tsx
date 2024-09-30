@@ -7,6 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { SubmitBillForm } from '@/components/submit-bill-form'
 import { useSubmitBill } from '@/hooks/useSubmitBill'
 import { Share } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export function SubmitBillButton() {
   const [open, setOpen] = useState(false)
@@ -31,35 +32,43 @@ export function SubmitBillButton() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {isSubmissionAllowed ? (
-          <Button className="landing-button bg-blue-500 hover:bg-blue-600">
-            {buttonContent}
-          </Button>
-        ) : (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button className="landing-button bg-blue-500 hover:bg-blue-600" disabled>
-                  {buttonContent}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Faturanı şu tarihten itibaren güncelleyebilirsin: {nextSubmissionDate?.toLocaleDateString()}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-white">
-        <DialogHeader>
-          <DialogTitle className="text-foreground">Fatura bilgilerin</DialogTitle>
-        </DialogHeader>
-        <SubmitBillForm 
-          onSubmissionComplete={() => setOpen(false)}
-        />
-      </DialogContent>
-    </Dialog>
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          {isSubmissionAllowed ? (
+            <Button className="landing-button bg-blue-500 hover:bg-blue-600">
+              {buttonContent}
+            </Button>
+          ) : (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button className="landing-button bg-blue-500 hover:bg-blue-600" disabled>
+                    {buttonContent}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Faturanı şu tarihten itibaren güncelleyebilirsin: {nextSubmissionDate?.toLocaleDateString()}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px] p-0 rounded-2xl overflow-hidden">
+          <Card className="w-full border-0 shadow-none rounded-none">
+            <CardHeader className="rounded-t-2xl bg-gray-50">
+              <CardTitle className="text-2xl font-bold text-center">
+                Fatura Bilgileri
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex items-center justify-center">
+              <SubmitBillForm 
+                onSubmissionComplete={() => setOpen(false)}
+              />
+            </CardContent>
+          </Card>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
