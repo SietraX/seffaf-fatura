@@ -15,7 +15,7 @@ Seffaf Fatura is a web application designed to collect and analyze mobile phone 
 - Contract start date trends
 - User authentication
 
-## Tech Stack
+## 🛠 Tech Stack
 
 <div >
 	<img width="50" src="https://user-images.githubusercontent.com/25181517/183890598-19a0ac2d-e88a-4005-a8df-1ee36782fde1.png" alt="TypeScript" title="TypeScript"/>
@@ -34,7 +34,7 @@ Seffaf Fatura is a web application designed to collect and analyze mobile phone 
 - **Styling**: Tailwind CSS, shadcn/ui
 - **State Management**: React Context API
 
-## Libraries and Tools
+## 📚 Libraries and Tools
 
 <div>
   <img  height="50" src="https://images.clerk.com/static/logo-light-mode-400x400.png" alt="Clerk Icon" title="Clerk">
