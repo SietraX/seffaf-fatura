@@ -20,7 +20,7 @@ export default function RootLayout({
     <ClerkProvider signInUrl="/sign-in" signUpUrl="/sign-up">
       <html lang="en" className="h-full">
         <body className="flex flex-col h-full md:bg-gray-100">
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
             <BillDataProvider>
               <Navbar />
               <main className="flex-grow">{children}</main>

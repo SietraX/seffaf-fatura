@@ -141,6 +141,7 @@ export default function LandingPage() {
             }}
             quality={100}
             className="rounded-xl"
+            priority
           />
           <div className="absolute top-[17%] right-[15%] z-10">
             <div className="relative">
