@@ -48,7 +48,7 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
   const [errors, setErrors] = useState<{[key in keyof BillFormData]?: string}>({});
   const [isTouched, setIsTouched] = useState<{[key in keyof BillFormData]?: boolean}>({});
   const [startMonths] = useState<string[]>(generatePastMonths(12));
-  const { isSubmissionAllowed, submitBill } = useSubmitBill();
+  const { submitBill } = useSubmitBill();
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const { toast } = useToast();
   const [isMonthPopoverOpen, setIsMonthPopoverOpen] = useState(false);

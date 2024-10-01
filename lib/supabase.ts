@@ -8,15 +8,12 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 let supabaseInstance: ReturnType<typeof createClient> | null = null;
 
 export const createSupabaseClient = async (req: NextRequest) => {
-  const { userId } = getAuth(req)
 
   if (supabaseInstance) return supabaseInstance
 
   supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
     global: {
       headers: {
-        // Add Authorization header if required
-        // Authorization: `Bearer ${supabaseAccessToken}`,
       },
     },
   })

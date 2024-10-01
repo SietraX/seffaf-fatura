@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
-import { BillFormData } from '@/types/bill'
 import { monthNameToNumber } from '@/utils/monthNameToNumber'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
