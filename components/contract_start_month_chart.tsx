@@ -11,6 +11,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+import { TooltipProps } from '@/types/chart-types';
+
 const COLORS = ['#00C49F', '#FFBB28', '#0088FE', '#FF8042', '#FF6663'];
 
 interface MonthlyData {
@@ -19,7 +21,7 @@ interface MonthlyData {
   [key: string]: string | number; // Allow any string key with number value
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white p-2 border border-gray-300 rounded shadow-md text-xs">

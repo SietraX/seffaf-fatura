@@ -1,28 +1,31 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Legend, ResponsiveContainer } from "recharts"
+import React, { useState, useMemo, useEffect } from "react";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { useBillData } from "@/contexts/BillDataContext"
-import { median } from "d3-array"
+} from "@/components/ui/select";
+import { useBillData } from "@/contexts/BillDataContext";
+import { median } from "d3-array";
 
 const chartConfig: ChartConfig = {
   price: {
@@ -32,8 +35,18 @@ const chartConfig: ChartConfig = {
 } satisfies ChartConfig;
 
 const turkishMonths = [
-  'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
-  'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'
+  "Oca",
+  "Şub",
+  "Mar",
+  "Nis",
+  "May",
+  "Haz",
+  "Tem",
+  "Ağu",
+  "Eyl",
+  "Eki",
+  "Kas",
+  "Ara",
 ];
 
 export function PriceActionChart() {
@@ -82,13 +95,17 @@ export function PriceActionChart() {
 
     const filteredBills = billData.filter((bill) => {
       const contractDate = new Date(bill.contract_start_date);
-      return bill.gigabyte_package.toString() === selectedGB &&
-             contractDate.getTime() > now.getTime() - timeFilterMs;
+      return (
+        bill.gigabyte_package.toString() === selectedGB &&
+        contractDate.getTime() > now.getTime() - timeFilterMs
+      );
     });
 
     const groupedByMonthAndProvider = filteredBills.reduce((acc, bill) => {
       const date = new Date(bill.contract_start_date);
-      const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+      const monthYear = `${date.getFullYear()}-${String(
+        date.getMonth() + 1
+      ).padStart(2, "0")}`;
       if (!acc[monthYear]) {
         acc[monthYear] = {};
       }
@@ -99,7 +116,9 @@ export function PriceActionChart() {
       return acc;
     }, {} as Record<string, Record<string, number[]>>);
 
-    const providers = Array.from(new Set(filteredBills.map((bill) => bill.provider_name)));
+    const providers = Array.from(
+      new Set(filteredBills.map((bill) => bill.provider_name))
+    );
 
     const result = Object.entries(groupedByMonthAndProvider)
       .map(([monthYear, providerData]) => {
@@ -115,16 +134,31 @@ export function PriceActionChart() {
 
     // Generate all months for the selected time range
     const relevantMonths = Array.from({ length: timeFilterMonths }, (_, i) => {
-      const date = new Date(now.getFullYear(), now.getMonth() - timeFilterMonths + i + 1, 1);
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const date = new Date(
+        now.getFullYear(),
+        now.getMonth() - timeFilterMonths + i + 1,
+        1
+      );
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}`;
     });
 
     // Fill in missing months and ensure all providers have entries
-    const filledResult = relevantMonths.map(monthYear => {
-      const existingData = result.find(item => item.date === monthYear) || { date: monthYear };
+    const filledResult = relevantMonths.map((monthYear) => {
+      const existingData = result.find((item) => item.date === monthYear) || {
+        date: monthYear,
+      };
       return {
         ...existingData,
-        ...providers.reduce((acc, provider) => ({ ...acc, [provider]: existingData[provider] ?? null }), {})
+        ...providers.reduce(
+          (acc, provider) => ({
+            ...acc,
+            [provider]: existingData[provider] ?? null,
+          }),
+          {}
+        ),
       };
     });
 
@@ -196,10 +230,27 @@ export function PriceActionChart() {
                 margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
               >
                 <defs>
-                  {Array.from(new Set(billData.map((bill) => bill.provider_name))).map((provider, index) => (
-                    <linearGradient key={provider} id={`fill${provider}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={`hsl(${(index * 137.5) % 360}, 70%, 50%)`} stopOpacity={0.8} />
-                      <stop offset="95%" stopColor={`hsl(${(index * 137.5) % 360}, 70%, 50%)`} stopOpacity={0.1} />
+                  {Array.from(
+                    new Set(billData.map((bill) => bill.provider_name))
+                  ).map((provider, index) => (
+                    <linearGradient
+                      key={provider}
+                      id={`fill${provider}`}
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="5%"
+                        stopColor={`hsl(${(index * 137.5) % 360}, 70%, 50%)`}
+                        stopOpacity={0.8}
+                      />
+                      <stop
+                        offset="95%"
+                        stopColor={`hsl(${(index * 137.5) % 360}, 70%, 50%)`}
+                        stopOpacity={0.1}
+                      />
                     </linearGradient>
                   ))}
                 </defs>
@@ -220,20 +271,26 @@ export function PriceActionChart() {
                 <YAxis
                   tickFormatter={(value) => `₺${value.toFixed(0)}`}
                   domain={["auto", "auto"]}
-                  label={{ value: "Fiyat (₺)", angle: -90, position: "insideLeft" }}
+                  label={{
+                    value: "Fiyat (₺)",
+                    angle: -90,
+                    position: "insideLeft",
+                  }}
                 />
                 <ChartTooltip
                   content={
                     <ChartTooltipContent
                       labelFormatter={(value) => {
-                        const [year, month] = value.split("-")
+                        const [year, month] = value.split("-");
                         return `${turkishMonths[parseInt(month) - 1]} ${year}`;
                       }}
                       indicator="dot"
                     />
                   }
                 />
-                {Array.from(new Set(billData.map((bill) => bill.provider_name))).map((provider, index) => (
+                {Array.from(
+                  new Set(billData.map((bill) => bill.provider_name))
+                ).map((provider, index) => (
                   <Area
                     key={provider}
                     type="monotone"
@@ -255,5 +312,5 @@ export function PriceActionChart() {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { UserButton, useUser, SignInButton } from "@clerk/nextjs";
 import { SubmitBillButton } from "@/components/submit-bill-button";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export function Navbar() {
   const { isSignedIn, user } = useUser();
@@ -14,7 +15,7 @@ export function Navbar() {
   return (
     <nav className="flex justify-between items-center p-4 bg-background shadow h-[6vh]">
       <Link href="/" className="flex items-center gap-2">
-        <img src="/logo.png" alt="Logo" className="h-8 w-8" />
+        <Image src="/logo.png" alt="Logo" className="h-8 w-8" />
         <span className="text-foreground text-xl font-bold">
           Fatura
         </span>

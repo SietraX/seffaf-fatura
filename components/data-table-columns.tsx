@@ -51,7 +51,7 @@ export const columns: ColumnDef<BillData>[] = [
   {
     accessorKey: "contract_start_month_turkish",
     header: "Başlangıç Ayı",
-    sortingFn: (rowA, rowB, columnId) => {
+    sortingFn: (rowA, rowB) => {
       // Use the numeric contract_start_month for sorting
       const monthA = rowA.original.contract_start_month as number;
       const monthB = rowB.original.contract_start_month as number;

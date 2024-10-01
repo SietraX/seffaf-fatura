@@ -1,13 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
-import { getAuth } from '@clerk/nextjs/server'
-import { NextRequest } from 'next/server'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 let supabaseInstance: ReturnType<typeof createClient> | null = null;
 
-export const createSupabaseClient = async (req: NextRequest) => {
+export const createSupabaseClient = async () => {
 
   if (supabaseInstance) return supabaseInstance
 
