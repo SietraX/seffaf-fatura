@@ -18,7 +18,7 @@ const faqData = [
   },
   {
     question: "Grafiklerden ne tür bilgiler edinebilirim?",
-    answer: "Grafiklerimiz, operatörler arasındaki ortalama fatura fiyatları, gigabyte paketlerinin dağılımı ve zaman içindeki fiyat eğilimleri hakkında bilgiler sunarak, planınızı piyasa ortalamaları ile karşılaştırmanıza yardımcı olur."
+    answer: "Grafiklerimiz, operatörler arasındaki ortalama fatura fiyatları, GB paketlerinin dağılımı ve zaman içindeki fiyat eğilimleri hakkında bilgiler sunarak, planınızı piyasa ortalamaları ile karşılaştırmanıza yardımcı olur."
   },
   {
     question: "Gönderdiğim fatura bilgilerini güncelleyebilir miyim?",

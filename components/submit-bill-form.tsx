@@ -25,6 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { generateBillStartDate } from "@/utils/generateBillStartDate";
 import { monthNameToNumber } from "@/utils/monthNameToNumber";
 import { Send } from "lucide-react"; // Import the Send icon
+import { Check } from "lucide-react"; // Import the Check icon
 
 const providers = ["Turkcell", "Türk Telekom", "Vodafone", "Netgsm"];
 const gigabytePackages = [
@@ -168,6 +169,16 @@ export function SubmitBillForm({ onSubmissionComplete }: SubmitBillFormProps) {
       contract_start_date: contractStartDate,
     });
     if (success) {
+      toast({
+        title: "Başarılı",
+        description: (
+          <div className="flex items-center">
+            <Check className="h-4 w-4 mr-2 bg-green-500" />
+            <span>Faturanız başarıyla gönderildi. Teşekkür ederiz!</span>
+          </div>
+        ),
+        variant: "default",
+      });
       onSubmissionComplete();
     } else {
       toast({

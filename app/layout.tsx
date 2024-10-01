@@ -4,6 +4,7 @@ import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { BillDataProvider } from "@/contexts/BillDataContext";
 import { Footer } from "@/components/footer";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata = {
   title: "Fatura | Telefon Faturası Kıyaslama Sayfası",
@@ -24,6 +25,7 @@ export default function RootLayout({
               <Navbar />
               <main className="flex-grow">{children}</main>
               <Footer />
+              <Toaster />
             </BillDataProvider>
           </ThemeProvider>
         </body>
