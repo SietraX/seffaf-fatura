@@ -26,7 +26,6 @@ Seffaf Fatura is a web application designed to collect and analyze mobile phone 
 	<img width="50" src="https://user-images.githubusercontent.com/25181517/202896760-337261ed-ee92-4979-84c4-d4b829c7355d.png" alt="Tailwind CSS" title="Tailwind CSS"/>
 	<img width="50" src="https://github.com/user-attachments/assets/e4bd419a-2a4a-459a-ba9a-d3324e693c4d" alt="ShadCn UI" title="ShadCn UI"/>
 </div>
-<br />
 
 - **Frontend**: Typescript, React 18, Next.js 14
 - **Backend**: Next.js API Routes
@@ -46,13 +45,13 @@ Seffaf Fatura is a web application designed to collect and analyze mobile phone 
   <img  width="50" height="50" src="https://github.com/tandpfun/skill-icons/raw/main/icons/D3-Dark.svg" alt="D3-array Icon" title="D3" />
 </div>
 
-- **@clerk/nextjs**: User authentication and management
-- **@supabase/supabase-js**: Database interactions
-- **framer-motion**: Animations
-- **recharts**: Data visualization
-- **@radix-ui**: UI components
-- **date-fns**: Date manipulation
-- **d3-array**: Data processing
+- **User authentication and management**: @clerk/nextjs
+- **Database interactions**: @supabase/supabase-js
+- **Animations**: @framer-motion
+- **Data visualization**: @recharts
+- **UI components**: @radix-ui
+- **Date manipulation**: @date-fns
+- **Data processing**: d3-array
 
 ## Pages
 
